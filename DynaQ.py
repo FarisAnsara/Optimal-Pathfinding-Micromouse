@@ -18,16 +18,15 @@ class DynaQ:
         self.positions = [(n, m) for n in range(self.mazeWidth) for m in range(self.mazeHeight)]
         for position in self.positions:
             self.q_table[position] = [0, 0, 0, 0]
-            
+
         self.walls = walls
         self.visited_cells = visited_cells
-
-        inf = 100000
-        self.flood_map = [[inf for _ in range(self.mazeWidth)] for _ in range(self.mazeHeight)]
 
         self.orientation = self.NORTH
         self.start_position = (0,0)
         self.goal_position = None
+
+        self.epsilon = 0.99
 
 
     
