@@ -3,10 +3,6 @@ import sys
 class MouseCrashedError(Exception):
     pass
         
-    
-
-
-
 def command(args, return_type=None):
     line = " ".join([str(x) for x in args]) + "\n"
     sys.stdout.write(line)

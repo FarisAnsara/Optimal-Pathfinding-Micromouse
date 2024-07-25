@@ -2,8 +2,7 @@ import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from Helper_Classes import API
-from Helper_Classes.MoveMouse import MoveMouse
+from Helper_Classes import API, MoveMouse, Walls
 import sys
 import random
 from collections import deque
