@@ -5,7 +5,6 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 from Helper_Classes import API, MoveMouse, Walls
 from Classical_Algorithms import FloodFill
-
 import numpy as np
 import random
 import sys
@@ -100,13 +99,6 @@ class SARSAExplore(FloodFill):
         else:
             min_distance = min(abs(next_state[0] - goal[0]) + abs(next_state[1] - goal[1]) for goal in self.goal_positions)
             reward = -8 
-            # - min_distance
-            # # Exploration bonus for visiting new states
-            # if self.visited_states[next_state[0], next_state[1]] == 0:
-            #     reward += 5
-            # # Penalty for revisiting states
-            # if self.visited_states[next_state[0], next_state[1]] > 0:
-            #     reward -= 5
             log(reward)
             return reward
 

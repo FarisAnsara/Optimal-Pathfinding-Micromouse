@@ -5,7 +5,7 @@ sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 from Helper_Classes import API
 from Helper_Classes.MoveMouse import MoveMouse
-from Classical_Algorithms.Flood import FloodFill
+from Classical_Algorithms.FloodFill import FloodFill
 
 import numpy as np
 import random

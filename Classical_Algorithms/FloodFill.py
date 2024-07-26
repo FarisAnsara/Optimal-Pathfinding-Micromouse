@@ -6,7 +6,6 @@ from Helper_Classes import API, MoveMouse, Walls
 import sys
 import random
 from collections import deque
-import pickle
 import json
 
 class FloodFill(MoveMouse):
@@ -109,27 +108,11 @@ class FloodFill(MoveMouse):
 
     def is_found_shortest(self):
         return self.found_shortest
-    
-    def move(self, directions):
-        if self.orientation in directions:
-            self.move_update_position(self.orientation)
-        elif (self.orientation + 1) % 4 in directions:
-            if (self.orientation - 1) % 4 in directions:    
-                rand_direction = random.choice([(self.orientation + 1) % 4, (self.orientation - 1) % 4])
-                self.move_update_position(rand_direction)
-            else:
-                self.move_update_position((self.orientation + 1) % 4)
-        elif (self.orientation - 1) % 4 in directions:
-            self.move_update_position((self.orientation - 1) % 4)
-        elif (self.orientation + 2) % 4 in directions:
-            self.move_update_position((self.orientation + 2) % 4)
-        else:
-            pass
 
     def update_text_floodmap(self):
         for i, row in enumerate(self.flood_map):
             for j, val in enumerate(row):
-                API.setText(i, j, self.flood_map[i][j])        
+                API.setText(i, j, self.flood_map[i][j])
 
     def move_and_floodfill(self, ensure_shortest = True):
         while not self.found_shortest:
@@ -155,7 +138,7 @@ class FloodFill(MoveMouse):
                 rand_direction = random.choice([self.EAST, self.WEST])
                 self.move_update_position(rand_direction)
             elif self.EAST in directions:
-                if not self.wall_between(self.curr_position, self.EAST): 
+                if not self.wall_between(self.curr_position, self.EAST):
                     self.move_update_position(self.EAST)
                 else:
                     self.move_and_floodfill()
@@ -165,20 +148,20 @@ class FloodFill(MoveMouse):
                 self.move_update_position(self.SOUTH)
             else:
                 break
-                
+
             if not self.goal_position and self.curr_position in self.get_goal_position():
                 self.goal_position = self.curr_position
 
         if ensure_shortest:
             self.ensure_shortest_path()
-        
+
 
     def flood_fill(self, goal_positions):
         inf = self.mazeHeight * self.mazeWidth
         local_flood_map = [[inf for _ in range(self.mazeWidth)] for _ in range(self.mazeHeight)]
         queue = deque(tuple(goal_positions))
         visited = set(goal_positions)
-        
+
         if isinstance(goal_positions, tuple):
             local_flood_map[goal_positions[0]][goal_positions[1]] = 0
         else:
@@ -191,7 +174,7 @@ class FloodFill(MoveMouse):
                 x = queue.popleft()
                 y = queue.popleft()
                 n = 2
-            else: 
+            else:
                 x, y = queue.popleft()
 
             current_distance = local_flood_map[x][y]
@@ -214,23 +197,23 @@ class FloodFill(MoveMouse):
             # log(f'Movng to: {nearest_undiscovered}')
             self.move_to_position(nearest_undiscovered)
             self.move_and_floodfill()
-        
+
         self.flood_map = self.flood_fill(self.get_goal_position())
         self.update_text_floodmap()
-        
-        
+
+
 
     def move_to_position(self, position, go_back_start = False, take_shortest_path = False):
         while not self.curr_position == position:
             current_x, current_y = self.curr_position
             target_x, target_y = position
-            
+
             # if go_back_start:
             #     API.setColor(current_x, current_y, 'b')
-            
+
             if take_shortest_path:
                 API.setColor(current_x, current_y, 'r')
-            
+
             flood_map = self.flood_fill(position)
             curr = self.curr_position if self.curr_position else 'F'
             self.update_walls()
@@ -258,7 +241,7 @@ class FloodFill(MoveMouse):
             neighbor = (nx, ny)
             if 0 <= nx < self.mazeWidth and 0 <= ny < self.mazeHeight:
                 neighbors.append(neighbor)
-        
+
         return neighbors
 
 
@@ -279,10 +262,10 @@ class FloodFill(MoveMouse):
                         if not self.visited_cells[neighbor]:
                             neighbors = self.find_neighbors(neighbor)
                             for val in neighbors:
-                                if not self.visited_cells[val]: 
+                                if not self.visited_cells[val]:
                                     log(neighbor)
                                     return neighbor
-                        
+
                         queue.append(neighbor)
                         visited.add(neighbor)
                         self.visited_cells[neighbor] = True
@@ -292,38 +275,27 @@ class FloodFill(MoveMouse):
     def take_shortest_path(self):
         self.move_to_position(self.goal_position, take_shortest_path=True)
 
-    def save_walls_as_json(self, filename='walls.json'):
-        with open(filename, 'w') as file:
-            json.dump(self.walls, file)
-
-    # Load the dictionary from a file
-    def load_walls_from_json(self, filename='walls.json'):
-        with open(filename, 'r') as file:
-            self.walls = json.load(file)
-
-
+    # def save_walls_as_json(self, filename='walls.json'):
+    #     with open(filename, 'w') as file:
+    #         json.dump(self.walls, file)
+    #
+    # # Load the dictionary from a file
+    # def load_walls_from_json(self, filename='walls.json'):
+    #     with open(filename, 'r') as file:
+    #         self.walls = json.load(file)
 
 def log(string):
     sys.stderr.write("{}\n".format(string))
     sys.stderr.flush()
 
-
 def main():
     log("Running floodfill algorithm...")
-
     exp = FloodFill()
     exp.move_and_floodfill()
-    # exp.update_text_floodmap()
     exp.go_back_to_start()
     exp.take_shortest_path()
     exp.save_walls_as_json()
     log(exp.flood_map)
-
-    # goal_positions = exp.get_goal_position()
-    # flood_map = exp.flood_fill(goal_positions)  # Get the flood map for navigation
-    # log('\nFlood map for navigation:')
-    # for row in flood_map:
-    #     log(row)
 
 if __name__ == "__main__":
     main()
