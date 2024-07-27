@@ -1,9 +1,11 @@
-from Helper_Classes import API
-from Helper_Classes import Walls
+from Utilities import API
+import random
+
 
 class MoveMouse:
+
     def __init__(self):
-        self.curr_position = (0,0)
+        self.curr_position = (0, 0)
         self.NORTH, self.EAST, self.SOUTH, self.WEST = 0, 1, 2, 3
         self.directionVectors = {
             self.NORTH: (0, 1),
@@ -42,6 +44,7 @@ class MoveMouse:
         self.curr_position = (self.curr_position[0] + dx, self.curr_position[1] + dy)
 
     def move(self, directions):
+        # ToDo: refactor
         if self.orientation in directions:
             self.move_update_position(self.orientation)
         elif (self.orientation + 1) % 4 in directions:

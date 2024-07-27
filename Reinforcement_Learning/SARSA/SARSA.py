@@ -3,8 +3,8 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from Helper_Classes import API
-from Helper_Classes.MoveMouse import MoveMouse
+from Utilities import API
+from Utilities.MoveMouse import MoveMouse
 from Classical_Algorithms.FloodFill import FloodFill
 
 import numpy as np

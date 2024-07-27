@@ -3,7 +3,7 @@ import os
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 
-from Helper_Classes import API, MoveMouse, Walls
+from Utilities import API, MoveMouse, Walls
 from Classical_Algorithms import FloodFill
 import numpy as np
 import random
@@ -122,7 +122,7 @@ class SARSAExplore(FloodFill):
         self.visited_states[next_state[0], next_state[1]] += 1
 
         # Perform planning steps using Q-learning
-        if self.episode > 0:    
+        if self.episode > 0:
             for _ in range(self.planning_steps):
                 s, a, r, ns = random.choice(self.model)
                 max_next_q_value = np.max(self.q_table[ns[0], ns[1], :])
@@ -145,7 +145,7 @@ class SARSAExplore(FloodFill):
             self.go_back_to_start()
             self.turn_around()
             log(self.q_table)
-            self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
+            # self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
 
 def log(string):
     sys.stderr.write("{}\n".format(string))
