@@ -1,16 +1,16 @@
 import numpy as np
-from Utilities import Utils, Walls, MoveMouse, API
+from Utilities import API
+from Classical_Algorithms import FloodFill
 import random
 import sys
 
 
-class RLMaze(MoveMouse, Utils, Walls):
+class RLMazeOffline(FloodFill):
 
-    def __init__(self, offline = False):
-        MoveMouse.__init__(self)
-        Utils.__init__(self)
-        if not offline:
-            Walls.__init__(self, maze_width=16, maze_height=16)
+    def __init__(self):
+        # MoveMouse.__init__(self)
+        # FloodFill.__init__(self)
+        super().__init__()
         self.q_table = np.zeros((16, 16, 4))
         self.goal_positions = self.get_goal_position()
         self.goal_reward = 1000
@@ -62,7 +62,8 @@ class RLMaze(MoveMouse, Utils, Walls):
         return sum(self.walls[position]) == 3
 
     def get_unfeasable_paths(self, position, visited=None, recur=False):
-        # self.update_walls(position, self.orientation)
+        # TODO: Add actions and states, this was, we check the action and the state prev, if inside, we don't give it as one of the actions.
+
         if not self.is_dead_end(position):
             if not recur:
                 return
@@ -70,20 +71,27 @@ class RLMaze(MoveMouse, Utils, Walls):
         if visited is None:
             visited = set()
 
+        # if position in visited:
+        #     return
+
         visited.add(position)
         if self.is_dead_end(position):
-            action = (self.get_possible_actions_next_states(position, unfeas=True)[0][0] + 2) % 4
-            API.setColor(position[0], position[1], 'b')
+            log(f'possible: {self.get_possible_actions_next_states(position)}')
+            action = (self.get_possible_actions_next_states(position)[0][0] + 2) % 4
+            # self.unfeasable_paths.append((action, position))
+            API.setColor(position[0], position[1], 'r')
 
-        actions_next_states = self.get_possible_actions_next_states(position, unfeas=True)
+        actions_next_states = self.get_possible_actions_next_states(position)
         for act_state in actions_next_states:
             state = act_state[1]
             if state not in visited:
                 walls_true = [wall == True for wall in self.walls[state]]
+                # log(f'State = {state}, walls = {walls_true}')
                 action = (act_state[0] + 2) % 4
                 self.unfeasable_paths.append((action, state))
-                API.setColor(state[0], state[1], 'b')
-                if sum(walls_true) >= 2:
+                API.setColor(state[0], state[1], 'r')
+                if sum(walls_true) >= 2:  # Dead end or almost dead end
+
                     self.get_unfeasable_paths(state, visited, recur=True)
 
     def choose_action(self, state):
@@ -104,6 +112,14 @@ class RLMaze(MoveMouse, Utils, Walls):
             return self.unfeasable_path_reward
         else:
             return -1
+
+    def get_all_unfeasable(self):
+        for state in self.positions:
+            try:
+                self.get_unfeasable_paths(state)
+            except Exception as e:
+                log(f'state: {state}, err: {e}')
+
 
 def log(string):
     sys.stderr.write("{}\n".format(string))

@@ -29,6 +29,7 @@ class QLearningOnline(RLMaze):
         self.accumulated_reward = 0
         self.planning_steps = planning_steps
         self.episode = 0
+        self.model = []
 
     def learn(self):
         self.update_walls(position=self.curr_position, orientation=self.orientation)
@@ -53,8 +54,8 @@ class QLearningOnline(RLMaze):
         prev_reward = 0
         for episode in range(self.max_episodes):
             self.accumulated_reward = 0
-            if episode < 5:
-                self.epsilon = 0.99
+            # if episode < 5:
+            #     self.epsilon = 0.99
             self.episode = episode
             log(f'Running episode: {episode}')
             self.curr_position = self.start_position

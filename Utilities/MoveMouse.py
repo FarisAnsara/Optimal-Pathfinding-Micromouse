@@ -15,31 +15,35 @@ class MoveMouse:
         }
         self.orientation = self.NORTH
 
-    def turn_right(self):
-        API.turnRight()
+    def turn_right(self, offline):
+        if not offline:
+            API.turnRight()
         self.orientation = (self.orientation + 1) % 4
 
-    def turn_left(self):
-        API.turnLeft()
+    def turn_left(self, offline):
+        if not offline:
+            API.turnLeft()
         self.orientation = (self.orientation - 1) % 4
 
-    def turn_around(self):
-        API.turnLeft()
-        API.turnLeft()
+    def turn_around(self, offline):
+        if not offline:
+            API.turnLeft()
+            API.turnLeft()
         self.orientation = (self.orientation + 2) % 4
 
-    def turn_to_direction(self, direction):
+    def turn_to_direction(self, direction, offline):
         if (self.orientation + 1) % 4 == direction:
-            self.turn_right()
+            self.turn_right(offline)
         elif (self.orientation - 1) % 4 == direction:
-            self.turn_left()
+            self.turn_left(offline)
         elif (self.orientation + 2) % 4 == direction:
-            self.turn_around()
+            self.turn_around(offline)
 
-    def move_update_position(self, direction):
+    def move_update_position(self, direction, offline = False):
         if direction != self.orientation:
-            self.turn_to_direction(direction)
-        API.moveForward()
+            self.turn_to_direction(direction, offline)
+        if not offline:
+            API.moveForward()
         dx, dy = self.directionVectors[self.orientation]
         self.curr_position = (self.curr_position[0] + dx, self.curr_position[1] + dy)
 
