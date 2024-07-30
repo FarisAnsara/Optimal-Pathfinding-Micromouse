@@ -33,14 +33,9 @@ class DynaQLearningOffline(RLMazeOffline):
     def learn(self):
         self.update_walls(position=self.curr_position, orientation=self.orientation)
         state = self.curr_position
-        API.setColor(state[0], state[1], 'b')
         action = self.choose_action(state)
         self.move_update_position(action, offline=True)
-        # dx, dy = self.directionVectors[action]
-        # self.curr_position = (self.curr_position[0] + dx, self.curr_position[1] + dy)
         next_state = self.curr_position
-        log(f'state: {state}, next_state = {next_state}, action: {action}')
-
         self.update_walls(position=self.curr_position, orientation=self.orientation)
         reward = self.get_reward(next_state)
         self.accumulated_reward += reward
@@ -48,7 +43,6 @@ class DynaQLearningOffline(RLMazeOffline):
         self.q_table[state[0], state[1], action] += self.alpha * (
                 reward + self.gamma * max_next_q_value - self.q_table[state[0], state[1], action]
         )
-
         self.model.append((state, action, reward, next_state))
 
         if self.episode > 0:
@@ -60,7 +54,6 @@ class DynaQLearningOffline(RLMazeOffline):
                 )
         self.visited_states[next_state[0], next_state[1]] += 1
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
-        self.update_q_vals_on_API()
 
     def run_DynaQLearning(self):
         # Todo: implement Early stopping
@@ -68,8 +61,6 @@ class DynaQLearningOffline(RLMazeOffline):
         prev_reward = 0
         for episode in range(self.max_episodes):
             self.accumulated_reward = 0
-            # if episode < 5:
-            #     self.epsilon = 0.99
             self.episode = episode
             log(f'Running episode: {episode}')
             self.curr_position = self.start_position
@@ -93,12 +84,6 @@ class DynaQLearningOffline(RLMazeOffline):
         plt.ylabel('Accumulated Reward')
         plt.title('Q-learning Online Learning')
         plt.show()
-
-    def update_q_vals_on_API(self):
-        for i in range(self.q_table.shape[0]):
-            for j in range(self.q_table.shape[1]):
-                max_val = np.max(self.q_table[i, j])
-                API.setText(i, j, str(round(max_val, 2)))  # Display the Q-value
 
 
 def log(string):

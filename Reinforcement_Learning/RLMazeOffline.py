@@ -28,10 +28,11 @@ class RLMazeOffline(FloodFill):
     def get_possible_actions_next_states(self, position, unfeas=False):
         actions_next_states = []
         if self.is_dead_end(position) and self.wall_between(position,self.orientation):
-            # self.get_unfeasable_paths(position)
             self.dead_ends.append(position)
             API.setColor(position[0], position[1], 'r')
-            action = (self.orientation + 2) % 4
+            for direction in [self.NORTH, self.EAST, self.SOUTH, self.WEST]:
+                if not self.wall_between(position, direction):
+                    action = direction
             dx, dy = self.directionVectors[action]
             next_state = (position[0]+dx, position[1]+dy)
             return [(action,next_state)]
@@ -119,6 +120,13 @@ class RLMazeOffline(FloodFill):
                 self.get_unfeasable_paths(state)
             except Exception as e:
                 log(f'state: {state}, err: {e}')
+
+    def update_q_vals_on_API(self):
+        for i in range(self.q_table.shape[0]):
+            for j in range(self.q_table.shape[1]):
+                max_val = np.max(self.q_table[i, j])
+                API.setText(i, j, str(round(max_val, 2)))
+
 
 
 def log(string):

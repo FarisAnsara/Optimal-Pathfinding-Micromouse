@@ -12,7 +12,7 @@ from Utilities import API
 from Reinforcement_Learning.RLMaze import RLMaze
 
 
-class DynaQLearningOnline(RLMaze, FloodFill):
+class DynaQLearningOnline(RLMaze):
     def __init__(self, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=50, min_epsilon=0.01,
                  maze_width=16, maze_height=16, reward_threshold=1, planning_steps=100):
         super().__init__()

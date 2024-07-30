@@ -1,19 +1,18 @@
 import sys
 import os
-import time
-import random
 import matplotlib.pyplot as plt
 import numpy as np
+import random
 
 # Adding parent directories to sys.path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from Utilities import API
-from Reinforcement_Learning.RLMaze import RLMaze
+from Reinforcement_Learning import RLMazeOffline
 
 
-class DynaQSarsaOnline(RLMaze):
+class DynaQSarsaOffline(RLMazeOffline):
     def __init__(self, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=50, min_epsilon=0.01,
                  maze_width=16, maze_height=16, reward_threshold=1, planning_steps=100):
         super().__init__()
@@ -29,13 +28,13 @@ class DynaQSarsaOnline(RLMaze):
         self.accumulated_reward = 0
         self.planning_steps = planning_steps
         self.episode = 0
-        self.model = []  # Model to store (state, action, reward, next_state)
+        self.model = []
 
     def learn(self):
         self.update_walls(position=self.curr_position, orientation=self.orientation)
         state = self.curr_position
         action = self.choose_action(state)
-        self.move_update_position(action)
+        self.move_update_position(action, offline=True)
         next_state = self.curr_position
         self.update_walls(position=self.curr_position, orientation=self.orientation)
         reward = self.get_reward(next_state)
@@ -60,14 +59,14 @@ class DynaQSarsaOnline(RLMaze):
         self.visited_states[next_state[0], next_state[1]] += 1
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
 
-    def run_sarsa(self):
-        # Todo: implement early stopping
+    def run_DynaQ_sarsa(self):
+        # Todo: implement Early stopping
         rewards = []
         prev_reward = 0
         for episode in range(self.max_episodes):
             self.accumulated_reward = 0
-            if episode < 5:
-                self.epsilon = 0.99
+            # if episode < 5:
+            #     self.epsilon = 0.99
             self.episode = episode
             log(f'Running episode: {episode}')
             self.curr_position = self.start_position
@@ -83,16 +82,13 @@ class DynaQSarsaOnline(RLMaze):
             self.orientation = self.NORTH
 
             # Displaying the max Q-values
-            for i in range(self.q_table.shape[0]):
-                for j in range(self.q_table.shape[1]):
-                    max_val = np.max(self.q_table[i, j])
-                    API.setText(i, j, str(round(max_val, 2)))  # Display the Q-value
+            self.update_q_vals_on_API()
 
         plt.figure()
         plt.plot(range(len(rewards)), rewards)
         plt.xlabel('Episodes')
         plt.ylabel('Accumulated Reward')
-        plt.title('SARSA Online Learning')
+        plt.title('DynaQ-Sarsa Offline Learning')
         plt.show()
 
 
@@ -102,9 +98,10 @@ def log(string):
 
 
 def main():
-    log("Running DynaQ-SARSA algorithm online...")
-    exp = DynaQSarsaOnline()
-    exp.run_sarsa()
+    log("Running DynaQSarsa algorithm offline...")
+    exp = DynaQSarsaOffline()
+    exp.move_and_floodfill()
+    exp.run_DynaQ_sarsa()
 
 
 if __name__ == "__main__":

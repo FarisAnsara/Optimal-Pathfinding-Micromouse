@@ -6,11 +6,10 @@ import sys
 
 class RLMaze(MoveMouse, Utils, Walls):
 
-    def __init__(self, offline = False):
+    def __init__(self):
         MoveMouse.__init__(self)
         Utils.__init__(self)
-        if not offline:
-            Walls.__init__(self, maze_width=16, maze_height=16)
+        Walls.__init__(self, maze_width=16, maze_height=16)
         self.q_table = np.zeros((16, 16, 4))
         self.goal_positions = self.get_goal_position()
         self.goal_reward = 1000
@@ -28,10 +27,11 @@ class RLMaze(MoveMouse, Utils, Walls):
     def get_possible_actions_next_states(self, position, unfeas=False):
         actions_next_states = []
         if self.is_dead_end(position) and self.wall_between(position,self.orientation):
-            # self.get_unfeasable_paths(position)
             self.dead_ends.append(position)
             API.setColor(position[0], position[1], 'r')
-            action = (self.orientation + 2) % 4
+            for direction in [self.NORTH, self.EAST, self.SOUTH, self.WEST]:
+                if not self.wall_between(position, direction):
+                    action = direction
             dx, dy = self.directionVectors[action]
             next_state = (position[0]+dx, position[1]+dy)
             return [(action,next_state)]
