@@ -5,15 +5,15 @@ import time
 from collections import deque
 
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-import Utilities
+from Utilities import MoveMouse, Walls, Utils, API
 
 
-class FloodFill(Utilities.MoveMouse, Utilities.Walls, Utilities.Utils):
+class FloodFill(MoveMouse, Walls, Utils):
 
     def __init__(self, maze_width=16, maze_height=16):
-        Utilities.MoveMouse.__init__(self)
-        Utilities.Walls.__init__(self, maze_width, maze_height)
-        Utilities.Utils.__init__(self)
+        MoveMouse.__init__(self)
+        Walls.__init__(self, maze_width, maze_height)
+        Utils.__init__(self)
         self.mazeWidth = maze_width
         self.mazeHeight = maze_height
         inf = 100000
@@ -108,7 +108,7 @@ class FloodFill(Utilities.MoveMouse, Utilities.Walls, Utilities.Utils):
             current_x, current_y = self.curr_position
 
             if take_shortest_path:
-                Utilities.API.setColor(current_x, current_y, 'r')
+                API.setColor(current_x, current_y, 'r')
 
             flood_map = self.flood_fill(position)
             self.update_walls(position=self.curr_position, orientation=self.orientation)
@@ -176,11 +176,8 @@ def main():
     log("Running floodfill algorithm...")
     exp = FloodFill()
     exp.move_and_floodfill()
-    exp.go_back_to_start()
+    API.ackReset()
     exp.take_shortest_path()
-    Utilities.API.ackReset()
-    # time.sleep(2)
-    exp.move_and_floodfill()
 
 
 if __name__ == "__main__":
