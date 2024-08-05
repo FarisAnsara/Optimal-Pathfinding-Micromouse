@@ -4,11 +4,11 @@ import random
 import time
 from collections import deque
 
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 from Utilities import MoveMouse, Walls, Utils, API
 
 
-class FloodFill(MoveMouse, Walls, Utils):
+class FloodFillOnline(MoveMouse, Walls, Utils):
 
     def __init__(self, maze_width=16, maze_height=16):
         MoveMouse.__init__(self)
@@ -143,7 +143,6 @@ class FloodFill(MoveMouse, Walls, Utils):
         queue = deque([self.curr_position])
         visited = {self.curr_position}
 
-        # TODO: early stopping on BFS
         while queue:
             x, y = queue.popleft()
             for direction in [self.NORTH, self.EAST, self.SOUTH, self.WEST]:
@@ -174,9 +173,9 @@ def log(string):
 
 def main():
     log("Running floodfill algorithm...")
-    exp = FloodFill()
+    exp = FloodFillOnline()
     exp.move_and_floodfill()
-    API.ackReset()
+    exp.go_back_to_start()
     exp.take_shortest_path()
 
 

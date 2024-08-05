@@ -14,6 +14,7 @@ class MoveMouse:
             self.WEST: (-1, 0)
         }
         self.orientation = self.NORTH
+        self.start_position = (0, 0)
 
     def turn_right(self, offline):
         if not offline:
@@ -48,7 +49,6 @@ class MoveMouse:
         self.curr_position = (self.curr_position[0] + dx, self.curr_position[1] + dy)
 
     def move(self, directions):
-        # ToDo: refactor
         if self.orientation in directions:
             self.move_update_position(self.orientation)
         elif (self.orientation + 1) % 4 in directions:
@@ -63,3 +63,8 @@ class MoveMouse:
             self.move_update_position((self.orientation + 2) % 4)
         else:
             pass
+
+    def reset_env(self):
+        API.ackReset()
+        self.curr_position = self.start_position
+        self.orientation = self.NORTH

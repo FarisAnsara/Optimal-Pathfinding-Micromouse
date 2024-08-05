@@ -191,7 +191,9 @@ class MazeGenerator:
 
     def load_maze(self, filename):
         with open(filename, 'r') as f:
-            self.walls = {eval(k): v for k, v in json.load(f).items()}
+            walls = {eval(k): v for k, v in json.load(f).items()}
+
+        return walls
 
 
 def get_goal_position():
