@@ -82,7 +82,7 @@ def log(string):
 bfs = BFSOffline()
 API.clearAllColor()
 API.clearAllText()
-bfs.run_bfs()  # Now perform BFS on the discovered maze
+bfs.run_bfs()
 bfs.update_text_BFS()
 bfs.reset_env()
 bfs.move_along_shortest_path()
