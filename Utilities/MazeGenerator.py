@@ -233,6 +233,6 @@ def generate_mazes(num_mazes, width, height, output_dir):
         maze_gen.save_maze(os.path.join(output_dir, f'maze_{i}.json'))
 
 if __name__ == "__main__":
-    generate_mazes(3000, 16, 16, "mazes")
+    generate_mazes(3000, 16, 16, "mazes\generated")
     # draw_maze("Reinforcement_Learning\Deep_RL\mazes\maze_0.json")
     

@@ -95,6 +95,7 @@ def main():
     exp = DynaQLearningOffline()
     # flood = FloodFill()
     exp.move_and_floodfill()
+    exp.reset_env()
     # exp.get_all_unfeasable()
     exp.run_DynaQLearning()
 

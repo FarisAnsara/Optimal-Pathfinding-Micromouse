@@ -40,6 +40,13 @@ class BFSOffline(MoveMouse, Walls, Utils):
                     self.distances[neighbor] = self.distances[position] + 1
                     API.setColor(neighbor[0], neighbor[1], 'b')
 
+        # to do this online, we need to first, run BFS as usual, for distance blah blah blah,
+        # but, we need to run it recursive where we finish each episode of exploration, so we
+        # check the positions we can move, until reaching a dead end or the goal position, then,
+        # we go back to the first branch of the recursive function and tun it again for the rest
+        # of the positions. Or, we can just use the exploration function that uses floodfill and
+        # BFS and just run it offline, given the path, we can just move. Asking Ken today.
+
     def find_shortest_path_to_goal(self):
         goal_position = min(self.get_goal_position(), key=lambda pos: self.distances.get(pos, float('inf')))
 

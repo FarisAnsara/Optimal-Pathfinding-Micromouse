@@ -5,15 +5,14 @@ import numpy as np
 import random
 
 # Adding parent directories to sys.path
-sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
-sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..')))
 
 from Utilities import API
 from Reinforcement_Learning import RLMazeOffline
 
 
 class DynaQSarsaOffline(RLMazeOffline):
-    def __init__(self, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=50, min_epsilon=0.01,
+    def __init__(self, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=50, min_epsilon=0,
                  maze_width=16, maze_height=16, reward_threshold=1, planning_steps=100):
         super().__init__()
         self.epsilon = epsilon

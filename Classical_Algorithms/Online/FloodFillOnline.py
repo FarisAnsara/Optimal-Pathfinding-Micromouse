@@ -175,7 +175,7 @@ def main():
     log("Running floodfill algorithm...")
     exp = FloodFillOnline()
     exp.move_and_floodfill()
-    exp.go_back_to_start()
+    exp.reset_env()
     exp.take_shortest_path()
 
 
