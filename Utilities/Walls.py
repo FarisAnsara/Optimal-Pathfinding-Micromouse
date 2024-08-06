@@ -5,11 +5,13 @@ from Utilities import API
 
 class Walls:
 
-    def __init__(self, maze_width, maze_height):
+    def __init__(self, maze_width, maze_height, walls = None):
         self.mazeWidth = maze_width
         self.mazeHeight = maze_height
         self.positions = [(n, m) for n in range(self.mazeWidth) for m in range(self.mazeHeight)]
         self.walls = {a: [False, False, False, False] for a in self.positions}
+        if walls:
+            self.walls = walls
         self.visited_cells = {a: False for a in self.positions}
         self.start_position = (0, 0)
         self.walls[self.start_position] = [False, False, True, True]

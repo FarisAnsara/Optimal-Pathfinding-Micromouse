@@ -1,6 +1,5 @@
 import API
-from MazeGenerator import MazeGenerator
-import sys
+from mazes.MazeGenerator import MazeGenerator
 import os
 
 output_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))

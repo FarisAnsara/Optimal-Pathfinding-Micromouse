@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 from Utilities import API, MoveMouse, Walls, Utils
 
 
-class BFSOffline(MoveMouse, Walls, Utils):
+class BfsOnline(MoveMouse, Walls, Utils):
     def __init__(self):
         MoveMouse.__init__(self)
         Walls.__init__(self, maze_width=16, maze_height=16)
@@ -86,7 +86,7 @@ def log(string):
     sys.stderr.flush()
 
 
-bfs = BFSOffline()
+bfs = BfsOnline()
 API.clearAllColor()
 API.clearAllText()
 bfs.run_bfs()
