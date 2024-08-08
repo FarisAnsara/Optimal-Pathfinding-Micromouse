@@ -8,7 +8,7 @@ class Maze:
     @staticmethod
     def load_maze(filename):
         with open(filename, 'r') as f:
-            walls = {eval(k): v for k, v in json.load(f).items()}
+            walls = {tuple(k): v for k, v in json.load(f).items()}
 
         return walls
 

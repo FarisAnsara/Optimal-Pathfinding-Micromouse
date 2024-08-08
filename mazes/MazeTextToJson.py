@@ -28,12 +28,12 @@ def save_maze(maze_dict, filename):
         json.dump(maze_dict_str_keys, json_file, indent=4)
 
 
-# Create the classic_json directory if it doesn't exist
-output_dir = 'classic_json'
+# Create the competition_json directory if it doesn't exist
+output_dir = 'competition_json'
 os.makedirs(output_dir, exist_ok=True)
 
 # Use glob to find all .txt files in the 'classic' directory
-for filename in glob.glob(os.path.join('classic', '*.txt')):
+for filename in glob.glob(os.path.join('competition', '*.txt')):
     with open(filename) as file:
         maze_txt = file.read()
         maze_dict = convert_to_dictionary(maze_txt)
@@ -72,4 +72,4 @@ def draw_maze(maze_file):
     plt.show()
 
 
-draw_maze('classic_json/AAMC15Maze.json')
+draw_maze('competition_json/AAMC15Maze.json')

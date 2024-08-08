@@ -3,9 +3,9 @@ from Utilities import API
 
 class Utils:
 
-    def __init__(self):
-        self.mazeWidth = API.mazeWidth()
-        self.mazeHeight = API.mazeHeight()
+    def __init__(self, maze_width=16, maze_height=16):
+        self.mazeWidth = maze_width
+        self.mazeHeight = maze_height
 
     def get_goal_position(self):
         center_x, center_y = self.mazeWidth // 2, self.mazeHeight // 2
