@@ -11,7 +11,7 @@ from algorithms.mms_integration import API
 class BFSOffline(FloodFillOnline):
     def __init__(self):
         super().__init__()
-        self.distances = {}
+        self.distances = [[float('inf')] * self.mazeWidth for _ in range(self.mazeHeight)]
         self.directionVectors_inverse = {
             (0, 1): self.NORTH,  # Moving North
             (1, 0): self.EAST,  # Moving East
@@ -21,7 +21,8 @@ class BFSOffline(FloodFillOnline):
 
     def run_bfs(self):
         queue = deque([self.start_position])
-        self.distances[self.start_position] = 0
+        x, y = self.start_position
+        self.distances[y][x] = 0
         visited = set()
 
         while queue:
@@ -36,11 +37,12 @@ class BFSOffline(FloodFillOnline):
                 if (0 <= neighbor[0] < self.mazeWidth and 0 <= neighbor[1] < self.mazeHeight
                         and not self.wall_between(position, direction) and neighbor not in visited):
                     queue.appendleft(neighbor)
-                    self.distances[neighbor] = self.distances[position] + 1
-                    API.setColor(neighbor[0], neighbor[1], 'b')
+                    nx, ny = neighbor
+                    self.distances[ny][nx] = self.distances[y][x] + 1
+                    API.setColor(nx, ny, 'b')
 
     def find_shortest_path_to_goal(self):
-        goal_position = min(self.get_goal_position(), key=lambda pos: self.distances.get(pos, float('inf')))
+        goal_position = min(self.get_goal_position(), key=lambda pos: self.distances[pos[1]][pos[0]])
 
         path = []
         current_position = goal_position
@@ -55,7 +57,7 @@ class BFSOffline(FloodFillOnline):
                    not self.wall_between(current_position, self.directionVectors_inverse[(pos[0] - x, pos[1] - y)])
             ]
 
-            current_position = min(valid_neighbors, key=lambda pos: self.distances.get(pos, float('inf')))
+            current_position = min(valid_neighbors, key=lambda pos: self.distances[pos[1]][pos[0]])
 
         path.reverse()
         return path
@@ -70,8 +72,10 @@ class BFSOffline(FloodFillOnline):
             prev_pos = pos
 
     def update_text_BFS(self):
-        for position in self.distances.keys():
-            API.setText(position[0], position[1], self.distances[position])
+        for y in range(self.mazeHeight):
+            for x in range(self.mazeWidth):
+                if self.distances[y][x] != float('inf'):
+                    API.setText(x, y, self.distances[y][x])
 
 
 def log(string):

@@ -10,13 +10,14 @@ def convert_to_dictionary(maze_str):
 
     for j in range(1, len(maze_lines), 2):
         for i in range(0, len(maze_lines[0]), 4):
-            north = (maze_lines[j + 1][i:i + 4].__contains__('-')) if j < len(maze_lines) else True
-            east = (maze_lines[j][i + 4].__contains__('|')) if i != len(maze_lines[0]) - 1 else True
-            south = (maze_lines[j - 1][i:i + 4].__contains__('-')) if j > 0 else True
+            north = (maze_lines[j + 1][i:i + 4].__contains__('-')) if j + 1 < len(maze_lines) else True
+            east = (maze_lines[j][i + 4].__contains__('|')) if i + 4 < len(maze_lines[0]) else True
+            south = (maze_lines[j - 1][i:i + 4].__contains__('-')) if j - 1 >= 0 else True
             west = (maze_lines[j][i] == '|') if i != 0 else True
 
             x, y = i // 4, j // 2
-            maze_dict[(x, y)] = [north, east, south, west]
+            if x < 16 and y < 16:  # Ensure that the indices do not exceed 15
+                maze_dict[(x, y)] = [north, east, south, west]
 
     return maze_dict
 
@@ -33,13 +34,12 @@ output_dir = 'competition_json'
 os.makedirs(output_dir, exist_ok=True)
 
 # Use glob to find all .txt files in the 'classic' directory
-for filename in glob.glob(os.path.join('competition', '*.txt')):
+for filename in glob.glob(os.path.join('compitetion', '*.txt')):
     with open(filename) as file:
         maze_txt = file.read()
         maze_dict = convert_to_dictionary(maze_txt)
-
         # Define the output file path, changing the extension to .json
-        json_filename = os.path.join(output_dir, os.path.splitext(os.path.basename(filename))[0] + '.json')
+        json_filename = os.path.join('competition_json', os.path.splitext(os.path.basename(filename))[0] + '.json')
 
         # Save the dictionary as a JSON file
         save_maze(maze_dict, json_filename)

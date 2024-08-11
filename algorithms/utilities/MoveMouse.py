@@ -12,7 +12,9 @@ class MoveMouse:
         self.orientation = self.NORTH
         self.start_position = (0, 0)
         self.turns = 0
-        self.path = [self.start_position]
+        self.path = []
+        self.tot_t = 0
+
 
     def move_update_position(self, direction):
         if direction == self.orientation:
@@ -29,11 +31,14 @@ class MoveMouse:
     def reset_env(self):
         self.curr_position = self.start_position
         self.orientation = self.NORTH
+        self.turns = 0
+        self.path = []
+        self.tot_t = 0
 
     def get_stats(self):
         path_length = len(self.path)
         # Todo: add time taken to run, memory usage
-        return path_length, self.turns
+        return path_length, self.turns, self.tot_t
     
     def get_path(self):
         return self.path

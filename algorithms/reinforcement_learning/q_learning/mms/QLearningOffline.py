@@ -39,7 +39,6 @@ class QLearningOffline(RLMazeOffline):
                 reward + self.gamma * max_next_q_value - self.q_table[state[0], state[1], action]
         )
 
-        self.visited_states[next_state[0], next_state[1]] += 1
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
 
     def run_DynaQLearning(self):

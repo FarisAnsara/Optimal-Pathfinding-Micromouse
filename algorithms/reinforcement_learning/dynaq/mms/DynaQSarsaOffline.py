@@ -30,13 +30,18 @@ class DynaQSarsaOffline(RLMazeOffline):
         self.model = []
 
     def learn(self):
+        # tf is going on!!!!!
+        log(self.curr_position)
         self.update_walls(position=self.curr_position, orientation=self.orientation)
         state = self.curr_position
         action = self.choose_action(state)
+        old_orientation = self.orientation
+        log(old_orientation)
         self.move_update_position(action, offline=True)
         next_state = self.curr_position
+        log(self.orientation)
         self.update_walls(position=self.curr_position, orientation=self.orientation)
-        reward = self.get_reward(next_state)
+        reward = self.get_reward(next_state, old_orientation)
         self.accumulated_reward += reward
         next_action = self.choose_action(next_state)
         self.q_table[state[0], state[1], action] += self.alpha * (
@@ -76,7 +81,7 @@ class DynaQSarsaOffline(RLMazeOffline):
             log(np.abs(self.accumulated_reward - prev_reward))
             rewards.append(self.accumulated_reward)
             prev_reward = self.accumulated_reward
-            API.ackReset()
+            self.reset_env()
             self.curr_position = self.start_position
             self.orientation = self.NORTH
 
@@ -100,6 +105,7 @@ def main():
     log("Running DynaQSarsa algorithm offline...")
     exp = DynaQSarsaOffline()
     exp.move_and_floodfill()
+    exp.reset_env()
     exp.run_DynaQ_sarsa()
 
 

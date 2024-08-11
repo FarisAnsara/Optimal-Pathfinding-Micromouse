@@ -8,7 +8,7 @@ import random
 
 class RLMazeOffline(FloodFillOnline):
 
-    def __init__(self):
+    def __init__(self, epsilon = 0.99):
         super().__init__()
         self.q_table = np.zeros((16, 16, 4))
         self.goal_positions = self.get_goal_position()
@@ -23,6 +23,46 @@ class RLMazeOffline(FloodFillOnline):
             self.SOUTH: (0, -1),
             self.WEST: (-1, 0)
         }
+        self.epsilon = epsilon
+        self.u = 0
+        self.s = 0.18
+        self.s_stop = 0.09
+        self.d = 0.03
+        self.v_max = 1
+        self.a = 0.5
+        self.tot_t = 0
+
+    def get_acceleration_time(self, s):
+        ceof = [0.5*self.a, self.u, -s]
+        roots = np.roots(ceof)
+        t = roots[roots > 0][0]
+        return t
+
+    def get_angle(self, action):
+        if action == (self.orientation + 2) % 4:
+            return 0
+        return 0.5*np.pi
+
+    def get_stop_time(self):
+        return (2*self.s_stop)/self.u
+
+    def get_turn_time(self, angle):
+        return np.sqrt((self.d * angle) / (2*self.a))
+
+    def get_time_taken_for_action(self, action):
+        if action == self.orientation:
+            t = self.get_acceleration_time(self.s)
+            self.tot_t += t
+            self.u = min(self.u + self.a*t, self.v_max)
+            return t
+        angle = self.get_angle(action)
+        t_stop = self.get_stop_time()
+        t_turn = self.get_turn_time(angle)
+        t_acc = self.get_acceleration_time(self.s_stop)
+        t = t_stop + t_turn + t_acc
+        self.tot_t += t
+        self.u = min(self.u + self.a * t, self.v_max)
+        return t
 
     def get_possible_actions_next_states(self, position, unfeas=False):
         actions_next_states = []
@@ -64,6 +104,7 @@ class RLMazeOffline(FloodFillOnline):
 
     def choose_action(self, state):
         actions_next_states = self.get_possible_actions_next_states(state)
+        print(actions_next_states)
         if len(actions_next_states) == 1:
             return actions_next_states[0][0]
         if random.random() < self.epsilon:
@@ -73,13 +114,13 @@ class RLMazeOffline(FloodFillOnline):
             best_action = max(actions_next_states, key=lambda x: q_values[x[0]])[0]
             return best_action
 
-    def get_reward(self, next_state):
+    def get_reward(self, next_state, action):
         if next_state in self.goal_positions:
             return self.goal_reward
         elif self.is_dead_end(next_state):
             return self.unfeasable_path_reward
         else:
-            return -1
+            return -self.get_time_taken_for_action(action)
 
     def get_all_unfeasable(self):
         for state in self.positions:

@@ -1,5 +1,3 @@
-from typing import List, Tuple
-
 from algorithms.utilities import MoveMouse, Utils, Walls
 from collections import deque
 
@@ -11,9 +9,14 @@ class FloodFill(Walls, Utils, MoveMouse):
         MoveMouse.__init__(self)
         self.inf = self.maze_width * self.maze_height
         self.flood_map = [[self.inf for _ in range(self.maze_width)] for _ in range(self.maze_height)]
-        self.found_shortest = False
         self.goalPositions = self.get_goal_position()
         self.directions = [self.NORTH, self.EAST, self.SOUTH, self.WEST]
+        self.directionVectors_inverse = {
+            (0, 1): self.NORTH,  # Moving North
+            (1, 0): self.EAST,  # Moving East
+            (0, -1): self.SOUTH,  # Moving South
+            (-1, 0): self.WEST  # Moving West
+        }
 
     def flood_fill(self):
         queue = deque(self.goalPositions)
@@ -49,31 +52,28 @@ class FloodFill(Walls, Utils, MoveMouse):
                     neighbors.append((direction, neighbor_value))
 
         neighbors.sort(key=lambda x: x[1])
+
         return neighbors
 
     def choose_next_position(self):
         neighbors = self.find_neighbors_descending()
-        directions = [neighbors[i][0] for i in range(len(neighbors))]
-        direction = directions[0]
-        x, y = self.curr_position
-        dx, dy = self.directionVectors[direction]
-        neighbor = (x + dx, y + dy)
-        if len(directions) == 1:
-            return direction, neighbor
+        direction = neighbors[0][0]
+        neighbor_value = neighbors[0][1]
+        if len(neighbors) == 1:
+            return direction
 
-        for val in directions:
-            if val <= direction == self.orientation:
-                dx, dy = self.directionVectors[direction]
-                neighbor = (x + dx, y + dy)
-                return val, neighbor
+        for val in neighbors[1::]:
+            if val[0] == self.orientation and val[1] <= neighbor_value:
+                return val[0]
 
-        return direction, neighbor
+        return direction
 
     def get_path_from_flood_map(self):
         self.reset_env()
         self.flood_fill()
+        self.path.append(self.start_position)
         while self.curr_position not in self.goalPositions:
-            direction, next_position = self.choose_next_position()
+            direction = self.choose_next_position()
             self.move_update_position(direction)
 
         return self.path

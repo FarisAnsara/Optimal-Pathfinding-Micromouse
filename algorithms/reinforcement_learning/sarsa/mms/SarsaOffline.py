@@ -19,7 +19,6 @@ class SarsaOffline(RLMazeOffline):
         self.min_epsilon = min_epsilon
         self.max_episodes = max_episodes
         self.goal_positions = self.get_goal_position()
-        self.visited_states = np.zeros((maze_width, maze_height))
         self.accumulated_reward = 0
         self.episode = 0
 
@@ -38,7 +37,6 @@ class SarsaOffline(RLMazeOffline):
             state[0], state[1], action]
         )
 
-        self.visited_states[next_state[0], next_state[1]] += 1
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
 
     def run_sarsa(self):

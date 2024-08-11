@@ -95,12 +95,6 @@
         true,
         false
     ],
-    "(16, 0)": [
-        false,
-        true,
-        false,
-        true
-    ],
     "(0, 1)": [
         false,
         false,
@@ -197,12 +191,6 @@
         false,
         false
     ],
-    "(16, 1)": [
-        false,
-        true,
-        false,
-        true
-    ],
     "(0, 2)": [
         false,
         false,
@@ -294,12 +282,6 @@
         false
     ],
     "(15, 2)": [
-        false,
-        true,
-        false,
-        true
-    ],
-    "(16, 2)": [
         false,
         true,
         false,
@@ -401,12 +383,6 @@
         false,
         false
     ],
-    "(16, 3)": [
-        false,
-        true,
-        false,
-        true
-    ],
     "(0, 4)": [
         false,
         false,
@@ -498,12 +474,6 @@
         false
     ],
     "(15, 4)": [
-        false,
-        true,
-        false,
-        true
-    ],
-    "(16, 4)": [
         false,
         true,
         false,
@@ -605,12 +575,6 @@
         false,
         false
     ],
-    "(16, 5)": [
-        false,
-        true,
-        false,
-        true
-    ],
     "(0, 6)": [
         false,
         false,
@@ -702,12 +666,6 @@
         false
     ],
     "(15, 6)": [
-        false,
-        true,
-        false,
-        true
-    ],
-    "(16, 6)": [
         false,
         true,
         false,
@@ -809,12 +767,6 @@
         false,
         false
     ],
-    "(16, 7)": [
-        false,
-        true,
-        false,
-        true
-    ],
     "(0, 8)": [
         false,
         false,
@@ -911,12 +863,6 @@
         false,
         false
     ],
-    "(16, 8)": [
-        false,
-        true,
-        false,
-        true
-    ],
     "(0, 9)": [
         false,
         false,
@@ -1008,12 +954,6 @@
         false
     ],
     "(15, 9)": [
-        false,
-        true,
-        false,
-        true
-    ],
-    "(16, 9)": [
         false,
         true,
         false,
@@ -1115,12 +1055,6 @@
         false,
         true
     ],
-    "(16, 10)": [
-        false,
-        true,
-        false,
-        true
-    ],
     "(0, 11)": [
         false,
         false,
@@ -1212,12 +1146,6 @@
         true
     ],
     "(15, 11)": [
-        false,
-        true,
-        false,
-        true
-    ],
-    "(16, 11)": [
         false,
         true,
         false,
@@ -1319,12 +1247,6 @@
         false,
         true
     ],
-    "(16, 12)": [
-        false,
-        true,
-        false,
-        true
-    ],
     "(0, 13)": [
         false,
         false,
@@ -1416,12 +1338,6 @@
         true
     ],
     "(15, 13)": [
-        false,
-        true,
-        false,
-        true
-    ],
-    "(16, 13)": [
         false,
         true,
         false,
@@ -1523,12 +1439,6 @@
         false,
         true
     ],
-    "(16, 14)": [
-        false,
-        true,
-        false,
-        true
-    ],
     "(0, 15)": [
         true,
         false,
@@ -1624,11 +1534,5 @@
         true,
         false,
         false
-    ],
-    "(16, 15)": [
-        false,
-        true,
-        false,
-        true
     ]
 }

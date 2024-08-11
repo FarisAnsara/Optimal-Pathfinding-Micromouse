@@ -6,7 +6,7 @@ import sys
 
 class RLMaze(MoveMouse, Utils, Walls):
 
-    def __init__(self):
+    def __init__(self, epsilon = 0.99):
         MoveMouse.__init__(self)
         Utils.__init__(self)
         Walls.__init__(self, maze_width=16, maze_height=16)
@@ -23,6 +23,7 @@ class RLMaze(MoveMouse, Utils, Walls):
             self.SOUTH: (0, -1),
             self.WEST: (-1, 0)
         }
+        self.epsilon = epsilon
 
     def get_possible_actions_next_states(self, position, unfeas=False):
         actions_next_states = []
