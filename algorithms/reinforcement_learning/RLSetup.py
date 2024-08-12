@@ -3,10 +3,11 @@ import sys
 from algorithms.utilities import MoveMouse, Utils, Walls
 import numpy as np
 import random
+from algorithms.utilities.Stats import Stats
 
 
 class RLSetup(MoveMouse, Walls, Utils):
-    def __init__(self, walls, maze_width=16, maze_height=16, epsilon = 0.99):
+    def __init__(self, walls, maze_width=16, maze_height=16, epsilon=0.99, num_agents=15):
         Walls.__init__(self, walls=walls, maze_width=maze_width, maze_height=maze_height)
         MoveMouse.__init__(self)
         self.q_table = np.zeros((16, 16, 4))
@@ -36,6 +37,7 @@ class RLSetup(MoveMouse, Walls, Utils):
         self.threshold = 1
         self.threshold_discount = 0.1
         self.min_threshold = 0.01
+        self.num_agents = num_agents
 
     def get_acceleration_time(self, s):
         ceof = [0.5*self.a, self.u, -s]
@@ -122,6 +124,7 @@ class RLSetup(MoveMouse, Walls, Utils):
     def get_reward(self, next_state, action, old_orientation, curr_state, dynaq=False):
         if self.threshold == self.min_threshold:
             self.path.append(next_state)
+
         if next_state in self.goal_positions:
             return self.goal_reward
         elif self.is_dead_end(next_state):
@@ -149,5 +152,7 @@ class RLSetup(MoveMouse, Walls, Utils):
         self.threshold = 1
         return False
 
-    def get_path(self):
-        return self.path
+    def get_time_from_path(self):
+        stats = Stats()
+        return stats.get_time_from_path(self.get_path())
+

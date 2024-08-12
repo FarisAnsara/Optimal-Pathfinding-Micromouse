@@ -67,7 +67,7 @@ class Stats:
             t_turn = self.get_turn_time(orientation, previous_orientation)
             t_acc = self.get_acceleration_time(self.s_stop)
             tot_time += t_acc_dec + t_turn + t_acc
-            print(position, t_acc_dec, t_turn, t_acc)
+            # print(position, t_acc_dec, t_turn, t_acc)
             self.u = 0
             counter = 0
             previous_position = position
