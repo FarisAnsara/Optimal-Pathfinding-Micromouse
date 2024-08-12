@@ -62,7 +62,7 @@ class BFS(Walls, Utils, MoveMouse):
             direction = self.directionVectors_inverse[(next_position[0] - x, next_position[1] - y)]
             self.move_update_position(direction)
 
-        # self.path.reverse()
+        self.path.reverse()
         return self.path
 
 

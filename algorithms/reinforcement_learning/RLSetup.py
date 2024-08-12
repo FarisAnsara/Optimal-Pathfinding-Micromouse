@@ -120,6 +120,8 @@ class RLSetup(MoveMouse, Walls, Utils):
             return best_action
 
     def get_reward(self, next_state, action, old_orientation, curr_state, dynaq=False):
+        if self.threshold == self.min_threshold:
+            self.path.append(next_state)
         if next_state in self.goal_positions:
             return self.goal_reward
         elif self.is_dead_end(next_state):
@@ -146,3 +148,6 @@ class RLSetup(MoveMouse, Walls, Utils):
             return False
         self.threshold = 1
         return False
+
+    def get_path(self):
+        return self.path

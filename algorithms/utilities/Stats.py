@@ -21,6 +21,7 @@ class Stats:
             (0, -1): self.SOUTH,
             (-1, 0): self.WEST
         }
+        self.start_position = (0, 0)
 
     def get_runtime(self):
         end_time = time.perf_counter_ns()
@@ -28,31 +29,27 @@ class Stats:
 
     def get_acceleration_time(self, s):
         final_velocity = np.sqrt(self.u ** 2 + 2 * self.a * s)
-        # print(final_velocity)
         ceof = [0.5 * self.a, self.u, -s]
         roots = np.roots(ceof)
         t = roots[roots > 0][0]
         if final_velocity > self.v_max:
-            print('gi')
             s_acc = (self.v_max ** 2 - self.u ** 2) / (2 * self.a)
             ceof = [0.5 * self.a, self.u, -s_acc]
             roots = np.roots(ceof)
             t_acc = roots[roots > 0][0]
 
             s_zero_acc = s - s_acc
-            print(s, s_acc)
             t_zero_acc = s_zero_acc/self.v_max
-            print(s_zero_acc, self.v_max, t_zero_acc)
             t = t_acc + t_zero_acc
         return t
 
     def get_turn_time(self, action, old_orientation):
         if action == (old_orientation + 2) % 4:
-            return 0
+            return 0    # Because mouse can reverse
         return np.sqrt((self.d * (np.pi/2)) / (2*self.a))
 
     def get_time_from_path(self, path):
-        counter = 0
+        counter = -0.5   # As we start from the middle of the start position
         previous_orientation = self.NORTH
         previous_position = path[0]
         tot_time = 0
@@ -70,7 +67,7 @@ class Stats:
             t_turn = self.get_turn_time(orientation, previous_orientation)
             t_acc = self.get_acceleration_time(self.s_stop)
             tot_time += t_acc_dec + t_turn + t_acc
-            # print(position, t_acc_dec, t_turn, t_acc, tot_time)
+            print(position, t_acc_dec, t_turn, t_acc)
             self.u = 0
             counter = 0
             previous_position = position

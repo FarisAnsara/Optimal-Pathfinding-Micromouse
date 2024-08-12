@@ -44,7 +44,7 @@ class DynaQSarsa(RLSetup):
                 n_q_value = self.q_table[ns[0], ns[1], na]
                 self.q_table[s[0], s[1], a] += self.alpha * (
                         r + self.gamma * n_q_value - self.q_table[s[0], s[1], a]
-                )
+            )
 
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
 
@@ -56,6 +56,7 @@ class DynaQSarsa(RLSetup):
             self.episode = episode
             print(f'Running episode: {episode}')
             self.curr_position = self.start_position
+            self.path.append(self.start_position)
             while self.curr_position not in self.goal_positions:
                 self.learn()
 

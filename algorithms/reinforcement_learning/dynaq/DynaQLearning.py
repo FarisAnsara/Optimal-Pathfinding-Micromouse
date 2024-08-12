@@ -51,11 +51,10 @@ class DynaQLearning(RLSetup):
         rewards = []
         for episode in range(self.max_episodes):
             self.accumalated_reward = 0
-            # if episode < 5:
-            #     self.epsilon = 0.99
             self.episode = episode
             print(f'Running episode: {episode}')
             self.curr_position = self.start_position
+            self.path.append(self.start_position)
             while self.curr_position not in self.goal_positions:
                 self.learn()
 
