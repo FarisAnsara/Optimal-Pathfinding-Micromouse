@@ -46,6 +46,8 @@ class RLSetup(MoveMouse, Walls, Utils):
         return t
 
     def get_stop_time(self):
+        if self.u == 0:
+            return 0
         t = (2*self.s_stop)/self.u
         self.u = 0
         return t
