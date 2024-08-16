@@ -53,7 +53,7 @@ class RLSetup(MoveMouse, Walls, Utils):
     def get_turn_time(self, action, old_orientation):
         if action == (old_orientation + 2) % 4:
             return 0
-        return 0.2170803763674803
+        return np.sqrt((self.d * (np.pi/2)) / (2*self.a))
 
     def get_time_taken_for_action(self, action, old_orientation, curr_state):
         cache_key = (curr_state, action, old_orientation)
