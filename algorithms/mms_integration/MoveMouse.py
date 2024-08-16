@@ -59,10 +59,8 @@ class MoveMouse:
                 self.move_update_position((self.orientation + 1) % 4)
         elif (self.orientation - 1) % 4 in directions:
             self.move_update_position((self.orientation - 1) % 4)
-        elif (self.orientation + 2) % 4 in directions:
-            self.move_update_position((self.orientation + 2) % 4)
         else:
-            pass
+            self.move_update_position((self.orientation + 2) % 4)
 
     def reset_env(self):
         API.ackReset()

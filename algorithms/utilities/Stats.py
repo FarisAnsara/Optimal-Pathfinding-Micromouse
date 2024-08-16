@@ -12,8 +12,8 @@ class Stats:
         self.s = 0.18
         self.s_stop = 0.09
         self.d = 0.03
-        self.v_max = 1
-        self.a = 0.5
+        self.v_max = 3
+        self.a = 0.5*9.81
         self.NORTH, self.EAST, self.SOUTH, self.WEST = 0, 1, 2, 3
         self.directionVectors_inverse = {
             (0, 1): self.NORTH,

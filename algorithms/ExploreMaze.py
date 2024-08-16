@@ -1,23 +1,40 @@
-import sys
-import os
+import random
 from collections import deque
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..')))
-from algorithms.mms_integration import MoveMouse, Walls, Utils, API
+from algorithms.utilities.MoveMouse import MoveMouse
+from algorithms.utilities.Utils import Utils
 
 
-class FloodFillOnline(MoveMouse, Walls, Utils):
+class ExploreMaze(MoveMouse, Utils):
 
-    def __init__(self, maze_width=16, maze_height=16):
+    def __init__(self, maze, maze_width=16, maze_height=16):
         MoveMouse.__init__(self)
-        Walls.__init__(self, maze_width, maze_height)
         Utils.__init__(self)
         self.mazeWidth = maze_width
         self.mazeHeight = maze_height
-        inf = 100000
+        self.positions = [(n, m) for n in range(self.mazeWidth) for m in range(self.mazeHeight)]
+        self.walls = {a: [False, False, False, False] for a in self.positions}
+        # FloodFill.__init__(self, walls=self.walls)
+        self.maze = maze
+        inf = self.mazeWidth * self.mazeHeight
         self.flood_map = [[inf for _ in range(self.mazeWidth)] for _ in range(self.mazeHeight)]
+        self.goal_position = self.get_goal_position()
         self.found_shortest = False
-        self.goal_position = None
+        self.visited_cells = {a: False for a in self.positions}
+        self.stop_exploring = False
+        self.path.append(self.start_position)
+
+    def wall_between(self, position, direction):
+        return self.walls[position][direction]
+
+    def update_walls(self, position):
+        if self.visited_cells[position]:
+            return
+
+        self.visited_cells[position] = True
+        walls = self.get_maze_info(position)
+        self.walls[position] = walls
+        self.update_walls_neighbors(walls[0], walls[1], walls[2], walls[3], position)
 
     def find_neighbor_descending(self, flood_map=None):
         neighbors = []
@@ -36,26 +53,68 @@ class FloodFillOnline(MoveMouse, Walls, Utils):
         neighbors.sort(key=lambda x: x[1])
         return neighbors
 
-    def move_and_floodfill(self, ensure_shortest=True):
-        while not self.found_shortest:
-            self.update_walls(position=self.curr_position, orientation=self.orientation)
-            self.update_text_flood_map(self.flood_map)
+    def update_walls_neighbors(self, north, east, south, west, position):
+        x, y = position
+
+        neighbors = {
+            self.NORTH: (x, y + 1),
+            self.EAST: (x + 1, y),
+            self.SOUTH: (x, y - 1),
+            self.WEST: (x - 1, y)
+        }
+
+        if 0 <= neighbors[self.NORTH][0] < self.mazeWidth and 0 <= neighbors[self.NORTH][1] < self.mazeHeight:
+            self.walls[neighbors[self.NORTH]][2] = north
+
+        if 0 <= neighbors[self.EAST][0] < self.mazeWidth and 0 <= neighbors[self.EAST][1] < self.mazeHeight:
+            self.walls[neighbors[self.EAST]][3] = east
+
+        if 0 <= neighbors[self.SOUTH][0] < self.mazeWidth and 0 <= neighbors[self.SOUTH][1] < self.mazeHeight:
+            self.walls[neighbors[self.SOUTH]][0] = south
+
+        if 0 <= neighbors[self.WEST][0] < self.mazeWidth and 0 <= neighbors[self.WEST][1] < self.mazeHeight:
+            self.walls[neighbors[self.WEST]][1] = west
+
+    def get_maze_info(self, position):
+        return self.maze[position]
+
+    def get_walls(self):
+        return self.walls
+
+    def move_and_floodfill(self, goal_position=None, ensure_shortest=True):
+        while not self.stop_exploring:
+            self.update_walls(position=self.curr_position)
+            self.flood_map = self.flood_fill(self.get_goal_position())
             neighbors_desc = self.find_neighbor_descending()
             if self.is_goal_position(self.curr_position):
-                self.found_shortest = True
-                break
+                self.stop_exploring = True
 
             if not neighbors_desc:
-                self.flood_map = self.flood_fill(self.get_goal_position())  # Use the returned flood map
+                self.flood_map = self.flood_fill(self.get_goal_position())
                 self.move_and_floodfill()
 
             directions = [neighbors_desc[i][0] for i in range(len(neighbors_desc))]
             self.move(directions)
+
             if not self.goal_position and self.curr_position in self.get_goal_position():
                 self.goal_position = self.curr_position
 
         if ensure_shortest:
             self.ensure_shortest_path()
+
+    def move(self, directions):
+        if self.orientation in directions:
+            self.move_update_position(self.orientation)
+        elif (self.orientation + 1) % 4 in directions:
+            if (self.orientation - 1) % 4 in directions:
+                rand_direction = random.choice([(self.orientation + 1) % 4, (self.orientation - 1) % 4])
+                self.move_update_position(rand_direction)
+            else:
+                self.move_update_position((self.orientation + 1) % 4)
+        elif (self.orientation - 1) % 4 in directions:
+            self.move_update_position((self.orientation - 1) % 4)
+        else:
+            self.move_update_position((self.orientation + 2) % 4)
 
     def flood_fill(self, goal_positions):
         inf = self.mazeHeight * self.mazeWidth
@@ -98,17 +157,11 @@ class FloodFillOnline(MoveMouse, Walls, Utils):
             self.move_and_floodfill()
 
         self.flood_map = self.flood_fill(self.get_goal_position())
-        self.update_text_flood_map(self.flood_map)
 
-    def move_to_position(self, position, go_back_start=False, take_shortest_path=False):
+    def move_to_position(self, position):
         while not self.curr_position == position:
-            current_x, current_y = self.curr_position
-
-            if take_shortest_path:
-                API.setColor(current_x, current_y, 'r')
-
             flood_map = self.flood_fill(position)
-            self.update_walls(position=self.curr_position, orientation=self.orientation)
+            self.update_walls(position=self.curr_position)
             neighbors_desc = self.find_neighbor_descending(flood_map)
 
             if not neighbors_desc:
@@ -116,12 +169,6 @@ class FloodFillOnline(MoveMouse, Walls, Utils):
 
             directions = [neighbors_desc[i][0] for i in range(len(neighbors_desc))]
             self.move(directions)
-
-    def go_back_to_start(self):
-        self.move_to_position(self.start_position, go_back_start=True)
-
-    def take_shortest_path(self):
-        self.move_and_floodfill()
 
     def find_neighbors(self, position):
         neighbors = []
@@ -158,23 +205,3 @@ class FloodFillOnline(MoveMouse, Walls, Utils):
                         visited.add(neighbor)
                         self.visited_cells[neighbor] = True
         return None
-
-    def take_shortest_path(self):
-        self.move_to_position(self.goal_position, take_shortest_path=True)
-
-
-def log(string):
-    sys.stderr.write("{}\n".format(string))
-    sys.stderr.flush()
-
-
-def main():
-    log("Running floodfill algorithm...")
-    flood = FloodFillOnline()
-    flood.move_and_floodfill()
-    flood.reset_env()
-    flood.take_shortest_path()
-
-
-if __name__ == "__main__":
-    main()
