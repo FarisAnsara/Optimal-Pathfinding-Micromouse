@@ -22,6 +22,7 @@ class Stats:
             (-1, 0): self.WEST
         }
         self.start_position = (0, 0)
+        self.tot_dist = 0
 
     def get_runtime(self):
         end_time = time.perf_counter_ns()
@@ -67,6 +68,7 @@ class Stats:
             t_turn = self.get_turn_time(orientation, previous_orientation)
             t_acc = self.get_acceleration_time(self.s_stop)
             tot_time += t_acc_dec + t_turn + t_acc
+            self.tot_dist += dist
             # print(position, t_acc_dec, t_turn, t_acc)
             self.u = 0
             counter = 0
@@ -75,5 +77,6 @@ class Stats:
 
         return tot_time
 
-
+    def get_dist_travelled(self):
+        return self.tot_dist
 

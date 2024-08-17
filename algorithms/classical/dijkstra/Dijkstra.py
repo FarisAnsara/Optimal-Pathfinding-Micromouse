@@ -1,8 +1,15 @@
 import heapq
-from algorithms.utilities import MoveMouse, Utils, Walls
+
+import psutil
+import os
+import tracemalloc
+from algorithms.utilities.Walls import Walls
+from algorithms.utilities.Utils import Utils
+from algorithms.utilities.MoveMouse import MoveMouse
 
 class Dijkstra(Walls, Utils, MoveMouse):
     def __init__(self, walls, maze_width=16, maze_height=16):
+        self.start_memory = self.memory_usage()
         Walls.__init__(self, walls=walls, maze_width=maze_width, maze_height=maze_height)
         MoveMouse.__init__(self)
         self.distances = [[float('inf')] * self.maze_width for _ in range(self.maze_height)]
@@ -36,6 +43,8 @@ class Dijkstra(Walls, Utils, MoveMouse):
                         heapq.heappush(pq, (new_distance, neighbor))
 
     def find_shortest_path_to_goal(self):
+        # Start memory tracking
+        # Run the algorithm
         self.dijkstra()
         goal_position = min(self.goal_positions, key=lambda pos: self.distances[pos[0]][pos[1]])
         self.curr_position = goal_position
@@ -47,11 +56,18 @@ class Dijkstra(Walls, Utils, MoveMouse):
             valid_neighbors = [
                 pos for pos in neighbors
                 if 0 <= pos[0] < self.maze_width and 0 <= pos[1] < self.maze_height and
-                   not self.wall_between(self.curr_position, self.directionVectors_inverse[(pos[0] - x, pos[1] - y)])
+                not self.wall_between(self.curr_position, self.directionVectors_inverse[(pos[0] - x, pos[1] - y)])
             ]
             next_position = min(valid_neighbors, key=lambda pos: self.distances[pos[0]][pos[1]])
             direction = self.directionVectors_inverse[(next_position[0] - x, next_position[1] - y)]
             self.move_update_position(direction)
 
         self.path.reverse()
+
+        # End memory tracking
+        end_memory = self.memory_usage()
+
+        # Total memory usage
+        total_memory_used = end_memory - self.start_memory
+        print(f"Total memory used: {total_memory_used} MB")
         return self.path

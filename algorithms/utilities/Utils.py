@@ -1,4 +1,7 @@
 import json
+import os
+
+import psutil
 from matplotlib import pyplot as plt
 
 
@@ -49,3 +52,9 @@ class Utils:
         plt.gca().set_aspect('equal', adjustable='box')
         plt.gca()
         plt.show()
+
+    @staticmethod
+    def memory_usage():
+        process = psutil.Process(os.getpid())
+        mem_info = process.memory_info()
+        return mem_info.rss / (1024 ** 2)  # in MB

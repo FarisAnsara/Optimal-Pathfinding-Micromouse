@@ -38,7 +38,7 @@ class MoveMouse:
     def get_stats(self):
         path_length = len(self.path)
         # Todo: add time taken to run, memory usage
-        return path_length, self.turns, self.tot_t
+        return path_length, self.turns
     
     def get_path(self):
         return self.path

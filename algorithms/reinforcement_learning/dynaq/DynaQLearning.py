@@ -1,11 +1,15 @@
+import os
 import random
+import tracemalloc
+
 import numpy as np
+import psutil
 from matplotlib import pyplot as plt
 
 from algorithms.reinforcement_learning.RLSetup import RLSetup
+from algorithms.utilities.Utils import Utils
 
-
-class DynaQLearning(RLSetup):
+class DynaQLearning(RLSetup, Utils):
     def __init__(self, walls, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=100, min_epsilon=0.01,
                  maze_width=16, maze_height=16, planning_steps=125):
         super().__init__(walls=walls)
@@ -18,7 +22,6 @@ class DynaQLearning(RLSetup):
         self.goal_positions = self.get_goal_position()
         self.planning_steps = planning_steps
         self.model = []
-
 
     def learn(self):
         state = self.curr_position
@@ -46,8 +49,12 @@ class DynaQLearning(RLSetup):
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
 
     def run_dyna_qlearning(self):
+        tracemalloc.start()
+        start_memory = psutil.Process(os.getpid()).memory_info().rss / (1024 ** 2)
         paths_time_rewards = {}
+        agents = 0
         for agent in range(self.num_agents):
+            self.agent = agent
             print(f'Running agent: {agent}')
             rewards = []
             for episode in range(self.max_episodes):
@@ -67,6 +74,9 @@ class DynaQLearning(RLSetup):
 
             if self.path:
                 paths_time_rewards[agent] = (self.path, self.get_time_from_path(), rewards)
+                agents += 1
+            if agents > 3:
+                break
             if agent < self.num_agents - 1:
                 self.__init__(walls=self.walls)
 
@@ -83,3 +93,16 @@ class DynaQLearning(RLSetup):
         plt.ylabel('Accumulated Reward')
         plt.title('DynaQLearning Learning')
         plt.show()
+
+        # End memory tracking
+        end_memory = psutil.Process(os.getpid()).memory_info().rss / (1024 ** 2)
+        peak_memory = tracemalloc.get_traced_memory()[1] / (1024 ** 2)
+        tracemalloc.stop()
+
+        print(f"Memory usage at start: {start_memory} MB")
+        print(f"Memory usage at end: {end_memory} MB")
+        print(f"Peak memory usage during execution: {peak_memory} MB")
+
+        # Total memory usage
+
+

@@ -38,6 +38,8 @@ class RLSetup(MoveMouse, Walls, Utils):
         self.threshold_discount = 0.1
         self.min_threshold = 0.01
         self.num_agents = num_agents
+        self.turn_time = np.sqrt((self.d * (np.pi/2)) / (2*self.a))
+        self.tot_agents = 3
 
     def get_acceleration_time(self, s):
         ceof = [0.5*self.a, self.u, -s]
@@ -55,7 +57,7 @@ class RLSetup(MoveMouse, Walls, Utils):
     def get_turn_time(self, action, old_orientation):
         if action == (old_orientation + 2) % 4:
             return 0
-        return np.sqrt((self.d * (np.pi/2)) / (2*self.a))
+        return self.turn_time
 
     def get_time_taken_for_action(self, action, old_orientation, curr_state):
         cache_key = (curr_state, action, old_orientation)
@@ -146,7 +148,7 @@ class RLSetup(MoveMouse, Walls, Utils):
 
 
     def early_stopping(self):
-        if abs(self.accumalated_reward - self.previous_reward) < self.threshold:
+        if abs(self.accumalated_reward - self.previous_reward) <= self.threshold:
             if self.threshold <= self.min_threshold:
                 return True
             self.threshold = self.threshold * self.threshold_discount
