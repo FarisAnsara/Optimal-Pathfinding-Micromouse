@@ -1,10 +1,11 @@
 import heapq
-from memory_profiler import profile
 from algorithms.utilities import MoveMouse, Utils, Walls
 
 
 class AStar(Walls, Utils, MoveMouse):
     def __init__(self, walls, maze_width=16, maze_height=16):
+        self.start_memory = self.memory_usage()
+        self.total_memory_used = 0
         Walls.__init__(self, walls=walls, maze_width=maze_width, maze_height=maze_height)
         MoveMouse.__init__(self)
         self.distances = [[float('inf')] * self.maze_width for _ in range(self.maze_height)]
@@ -48,7 +49,6 @@ class AStar(Walls, Utils, MoveMouse):
                         priority = new_distance + self.heuristic(neighbor)
                         heapq.heappush(pq, (priority, new_distance, neighbor))
 
-    @profile
     def find_shortest_path_to_goal(self):
         self.a_star()
         goal_position = min(self.goal_positions, key=lambda pos: self.distances[pos[0]][pos[1]])
@@ -68,4 +68,6 @@ class AStar(Walls, Utils, MoveMouse):
             self.move_update_position(direction)
 
         self.path.reverse()
+        end_memory = self.memory_usage()
+        self.total_memory_used = end_memory - self.start_memory
         return self.path

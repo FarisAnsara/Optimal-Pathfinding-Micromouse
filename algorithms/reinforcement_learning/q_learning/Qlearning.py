@@ -35,8 +35,12 @@ class QLearning(RLSetup):
 
     def run_qlearning(self):
         paths_time_rewards = {}
-        for agent in range(self.num_agents):
-            print(f'Running agent: {agent}')
+        agents_succeeded = 0
+        agent = 0
+        while agents_succeeded < 3:
+            agent += 1
+            print(f'running agent {agent}')
+            self.get_all_unfeasable()
             rewards = []
             for episode in range(self.max_episodes):
                 self.accumalated_reward = 0
@@ -48,25 +52,27 @@ class QLearning(RLSetup):
 
                 rewards.append(self.accumalated_reward)
                 if self.early_stopping():
-                    print(f'stopped at episode: {episode}')
                     break
                 self.reset_env()
                 self.previous_reward = self.accumalated_reward
 
-            # print(self.path)
             if self.path:
-                paths_time_rewards[agent] = (self.path, self.get_time_from_path(), rewards)
-            if agent < self.num_agents - 1:
-                self.__init__(walls=self.walls)
+                paths_time_rewards[agent] = (self.path, self.get_time_from_path(), rewards, self.q_table)
+                agents_succeeded += 1
+            self.__init__(walls=self.walls)
 
         min_time_agent = min(paths_time_rewards, key=lambda k: paths_time_rewards[k][1])
-        min_time_path, min_time, corresponding_rewards = paths_time_rewards[min_time_agent]
+        min_time_path, min_time, corresponding_rewards, min_time_q_table = paths_time_rewards[min_time_agent]
         self.path = min_time_path
-        print(f'Choose path: {self.path}, time: {min_time}')
+        self.q_table = min_time_q_table
 
-        plt.figure()
-        plt.plot(range(len(corresponding_rewards)), corresponding_rewards)
-        plt.xlabel('Episodes')
-        plt.ylabel('Accumulated Reward')
-        plt.title('Qlearning Learning')
-        plt.show()
+        end_memory = self.memory_usage()
+        self.total_memory_used = end_memory - self.start_memory
+        # print(f'Choose path: {self.path}, time: {min_time}')
+
+        # plt.figure()
+        # plt.plot(range(len(corresponding_rewards)), corresponding_rewards)
+        # plt.xlabel('Episodes')
+        # plt.ylabel('Accumulated Reward')
+        # plt.title('Qlearning Learning')
+        # plt.show()

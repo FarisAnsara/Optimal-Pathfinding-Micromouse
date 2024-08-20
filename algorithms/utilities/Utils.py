@@ -22,7 +22,7 @@ class Utils:
         return walls
 
     @staticmethod
-    def draw_maze(walls, path=None, goal_positions=None, dist_map = None):
+    def draw_maze(walls, path=None, goal_positions=None, dist_map = None, unfeasable=None):
         maze_width = 16
         maze_height = 16
         fig, ax = plt.subplots()
@@ -32,6 +32,10 @@ class Utils:
                 color = 'blue'
             elif goal_positions and (x, y) in goal_positions:
                 color = 'red'
+            if unfeasable:
+                for val in unfeasable:
+                    if (x, y) == val[1]:
+                        color = 'red'
 
             ax.add_patch(plt.Rectangle((x, y), 1, 1, color=color, alpha=0.3))
             if dist_map:

@@ -7,12 +7,14 @@ from algorithms.utilities.Stats import Stats
 
 
 class RLSetup(MoveMouse, Walls, Utils):
-    def __init__(self, walls, maze_width=16, maze_height=16, epsilon=0.99, num_agents=15):
+    def __init__(self, walls, maze_width=16, maze_height=16, epsilon=0.995, num_agents=15):
+        self.start_memory = self.memory_usage()
+        self.total_memory_used = 0
         Walls.__init__(self, walls=walls, maze_width=maze_width, maze_height=maze_height)
         MoveMouse.__init__(self)
         self.q_table = np.zeros((16, 16, 4))
         self.goal_positions = self.get_goal_position()
-        self.goal_reward = 1000
+        self.goal_reward = 10000
         self.unfeasable_path_reward = -10000
         self.unfeasable_paths = []
         self.dead_ends = []
@@ -36,10 +38,15 @@ class RLSetup(MoveMouse, Walls, Utils):
         self.previous_reward = 0
         self.threshold = 1
         self.threshold_discount = 0.1
-        self.min_threshold = 0.01
+        self.min_threshold = 0.1
         self.num_agents = num_agents
         self.turn_time = np.sqrt((self.d * (np.pi/2)) / (2*self.a))
         self.tot_agents = 3
+        self.max_number_of_steps = 15000
+        self.reward_discount = 0.9
+        self.reward_multiple = 10
+        self.min_reward_multiple = 0.0001
+
 
     def get_acceleration_time(self, s):
         ceof = [0.5*self.a, self.u, -s]
@@ -116,6 +123,12 @@ class RLSetup(MoveMouse, Walls, Utils):
 
     def choose_action(self, state):
         actions_next_states = self.get_possible_actions_next_states(state)
+        if not actions_next_states:
+            action = (self.orientation + 2) % 4
+            dx, dy = self.directionVectors[action]
+            next_state = self.curr_position[0] + dx, self.curr_position[1] + dy
+            self.unfeasable_paths.append((self.orientation, next_state))
+            return action
         if len(actions_next_states) == 1:
             return actions_next_states[0][0]
         if random.random() < self.epsilon:
@@ -125,18 +138,25 @@ class RLSetup(MoveMouse, Walls, Utils):
             best_action = max(actions_next_states, key=lambda x: q_values[x[0]])[0]
             return best_action
 
-    def get_reward(self, next_state, action, old_orientation, curr_state, dynaq=False):
-        if self.threshold == self.min_threshold:
-            self.path.append(next_state)
-
+    def get_reward(self, next_state, action, old_orientation, curr_state, dynaq=False, fails=False):
         if next_state in self.goal_positions:
             return self.goal_reward
         elif self.is_dead_end(next_state):
             return self.unfeasable_path_reward
+        elif (action, curr_state) in self.unfeasable_paths:
+            return self.unfeasable_path_reward
         else:
+            # if fails:
+            #     return -0.25
             if not dynaq:
                 return -0.25
-            return -self.get_time_taken_for_action(action, old_orientation, curr_state)
+            # return -0.25
+
+            self.get_time_taken_for_action(action, old_orientation, curr_state)
+            reward = self.reward_multiple * self.tot_t
+            self.reward_multiple = max(self.reward_discount* self.reward_multiple, self.min_reward_multiple)
+            # print(reward)
+            return -reward
 
     def get_max_q_values(self):
         max_q_val = [[0 for _ in range(16)] for _ in range(16)]
@@ -159,4 +179,35 @@ class RLSetup(MoveMouse, Walls, Utils):
     def get_time_from_path(self):
         stats = Stats()
         return stats.get_time_from_path(self.get_path())
+
+    def get_all_unfeasable(self):
+        for state in self.positions:
+            try:
+                self.get_unfeasable_paths(state)
+            except Exception as e:
+                pass
+
+    def get_unfeasable_paths(self, position, visited=None, recur=False):
+        if not self.is_dead_end(position):
+            if not recur:
+                return
+
+        if visited is None:
+            visited = set()
+
+        visited.add(position)
+        if self.is_dead_end(position):
+            self.dead_ends.append(position)
+            action = (self.get_possible_actions_next_states(position, unfeas=True)[0][0] + 2) % 4
+
+        actions_next_states = self.get_possible_actions_next_states(position, unfeas=True)
+        # print(position,actions_next_states)
+        for act_state in actions_next_states:
+            state = act_state[1]
+            if state not in visited:
+                walls_true = [wall == True for wall in self.walls[state]]
+                action = (act_state[0] + 2) % 4
+                self.unfeasable_paths.append((action, state))
+                if sum(walls_true) >= 2:
+                    self.get_unfeasable_paths(state, visited, recur=True)
 

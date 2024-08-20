@@ -10,6 +10,7 @@ class RLMazeOffline(FloodFillOnline):
 
     def __init__(self, epsilon = 0.99):
         super().__init__()
+        self.actions_not_to_take = []
         self.q_table = np.zeros((16, 16, 4))
         self.goal_positions = self.get_goal_position()
         self.goal_reward = 1000
@@ -64,17 +65,66 @@ class RLMazeOffline(FloodFillOnline):
         self.u = min(self.u + self.a * t, self.v_max)
         return t
 
+    def get_dead_ends(self):
+        for position in self.positions:
+            if self.is_dead_end(position):
+                self.dead_ends.append(position)
+                API.setColor(position[0], position[1], 'b')
+
+    def get_actions_leading_to_dead_ends(self):
+        global position
+        for dead_end in self.dead_ends:
+            for direction in [self.NORTH, self.EAST, self.SOUTH, self.WEST]:
+                if not self.wall_between(dead_end, direction):
+                    dx, dy = self.directionVectors[direction]
+                    position = dead_end[0] + dx, dead_end[1] + dy
+                    dir_inv = (direction + 2) % 4
+                    break
+
+            self.get_path_leading(position, dir_inv)
+
+    def get_path_leading(self, position, dir_inv):
+        num_walls = 0
+        for dir in [self.NORTH, self.EAST, self.SOUTH, self.WEST]:
+            if self.wall_between(position, dir):
+                num_walls += 1
+        if num_walls == 2:
+            self.actions_not_to_take.append((position, dir_inv))
+            # self.get_path_leading(position, )
+
+    def get_unfeasable_paths(self, position, visited=None, recur=False):
+        if not self.is_dead_end(position):
+            if not recur:
+                return
+
+        if visited is None:
+            visited = set()
+
+        visited.add(position)
+        if self.is_dead_end(position):
+            action = (self.get_possible_actions_next_states(position, unfeas=True)[0][0] + 2) % 4
+            API.setColor(position[0], position[1], 'b')
+
+        actions_next_states = self.get_possible_actions_next_states(position, unfeas=True)
+        for act_state in actions_next_states:
+            state = act_state[1]
+            if state not in visited:
+                walls_true = [wall == True for wall in self.walls[state]]
+                action = (act_state[0] + 2) % 4
+                self.unfeasable_paths.append((action, state))
+                if sum(walls_true) >= 2:
+                    self.get_unfeasable_paths(state, visited, recur=True)
     def get_possible_actions_next_states(self, position, unfeas=False):
         actions_next_states = []
-        if self.is_dead_end(position) and self.wall_between(position,self.orientation):
-            self.dead_ends.append(position)
+        if self.is_dead_end(position) and self.wall_between(position, self.orientation):
+            # self.dead_ends.append(position)
             API.setColor(position[0], position[1], 'r')
             for direction in [self.NORTH, self.EAST, self.SOUTH, self.WEST]:
                 if not self.wall_between(position, direction):
                     action = direction
             dx, dy = self.directionVectors[action]
             next_state = (position[0]+dx, position[1]+dy)
-            return [(action,next_state)]
+            return [(action, next_state)]
 
         for direction in [self.NORTH, self.EAST, self.SOUTH, self.WEST]:
             dx, dy = self.directionVectors[direction]
@@ -104,6 +154,12 @@ class RLMazeOffline(FloodFillOnline):
 
     def choose_action(self, state):
         actions_next_states = self.get_possible_actions_next_states(state)
+        if not actions_next_states:
+            action = (self.orientation + 2) % 4
+            dx, dy = self.directionVectors[action]
+            next_state = self.curr_position[0] + dx, self.curr_position[1] + dy
+            self.unfeasable_paths.append((self.orientation, next_state))
+            return action
         print(actions_next_states)
         if len(actions_next_states) == 1:
             return actions_next_states[0][0]

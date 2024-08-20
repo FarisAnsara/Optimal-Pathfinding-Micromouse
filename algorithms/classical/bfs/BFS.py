@@ -5,6 +5,8 @@ from collections import deque
 class BFS(Walls, Utils, MoveMouse):
 
     def __init__(self, walls, maze_width=16, maze_height=16):
+        self.start_memory = self.memory_usage()
+        self.total_memory_used = 0
         Walls.__init__(self, walls=walls, maze_width=maze_width, maze_height=maze_height)
         MoveMouse.__init__(self)
         inf = self.maze_width * self.maze_height
@@ -48,7 +50,6 @@ class BFS(Walls, Utils, MoveMouse):
             nx, ny = x + dx, y + dy
             if not self.wall_between(self.curr_position, direction) and (nx,ny) not in self.goal_positions:
                 self.orientation = direction
-                print(self.orientation)
 
         while self.curr_position != self.start_position:
             x, y = self.curr_position
@@ -63,6 +64,8 @@ class BFS(Walls, Utils, MoveMouse):
             self.move_update_position(direction)
 
         self.path.reverse()
+        end_memory = self.memory_usage()
+        self.total_memory_used = end_memory - self.start_memory
         return self.path
 
 

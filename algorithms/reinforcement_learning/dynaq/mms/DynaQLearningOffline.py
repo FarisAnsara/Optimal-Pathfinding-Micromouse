@@ -28,11 +28,12 @@ class DynaQLearningOffline(RLMazeOffline):
     def learn(self):
         self.update_walls(position=self.curr_position, orientation=self.orientation)
         state = self.curr_position
+        log(state)
         action = self.choose_action(state)
         self.move_update_position(action, offline=True)
         next_state = self.curr_position
         self.update_walls(position=self.curr_position, orientation=self.orientation)
-        reward = self.get_reward(next_state)
+        reward = self.get_reward(next_state, action)
         self.accumulated_reward += reward
         max_next_q_value = np.max(self.q_table[next_state[0], next_state[1], :])
         self.q_table[state[0], state[1], action] += self.alpha * (
@@ -91,10 +92,13 @@ def main():
     exp = DynaQLearningOffline()
     # flood = FloodFill()
     exp.move_and_floodfill()
+    # exp.get_dead_ends()
+    exp.get_all_unfeasable()
+    log(exp.unfeasable_paths)
+    API.setColor(1,3, 'k')
     exp.reset_env()
-    # exp.get_all_unfeasable()
     exp.run_DynaQLearning()
-
+    log(exp.unfeasable_paths)
 
 if __name__ == "__main__":
     main()
