@@ -35,7 +35,26 @@ class Utils:
             if unfeasable:
                 for val in unfeasable:
                     if (x, y) == val[1]:
-                        color = 'red'
+                        color = '#575757'
+                        if val[0] == 0:
+                            text = '^'
+                            position = (x+ 0.5, y + 0.75)
+                        elif val[0] == 1:
+                            text = '>'
+                            position = (x+ 0.75, y + 0.5)
+                        elif val[0] == 2:
+                            text = 'v'
+                            position = (x + 0.5, y + 0.25)
+                        elif val[0] == 3:
+                            position = (x + 0.25, y + 0.5)
+                            text = '<'
+                        else:
+                            text = ''
+                            position = (x+0.5, y+0.5)
+                            ax.plot([x, x + 1], [y, y + 1], color='black')
+                            ax.plot([x + 1, x], [y, y + 1], color='black')
+                        font_size = min(7, 120 // max(maze_width, maze_height))  # Further reduced font size
+                        ax.text(position[0], position[1], text, ha='center', va='center', fontsize=font_size)
 
             ax.add_patch(plt.Rectangle((x, y), 1, 1, color=color, alpha=0.3))
             if dist_map:

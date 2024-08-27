@@ -1,11 +1,11 @@
 import numpy as np
 from matplotlib import pyplot as plt
 
-from algorithms.reinforcement_learning.RLSetup import RLSetup
+from algorithms.reinforcement_learning.RL import RL
 
 
-class QLearning(RLSetup):
-    def __init__(self, walls, epsilon=0.99, alpha=0.1, gamma=0.8, epsilon_decay=0.99, max_episodes=1000, min_epsilon=0.01,
+class QLearning(RL):
+    def __init__(self, walls, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=1000, min_epsilon=0.01,
                  maze_width=16, maze_height=16):
         super().__init__(walls=walls)
         self.epsilon = epsilon

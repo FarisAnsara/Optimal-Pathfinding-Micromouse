@@ -1,2 +1,2 @@
-from algorithms.mms_integration.reinforcement_learning.RLMaze import RLMaze
-from algorithms.mms_integration.reinforcement_learning.RLMazeOffline import RLMazeOffline
+from algorithms.mms_integration.reinforcement_learning.RL import RL
+from algorithms.mms_integration.reinforcement_learning.RLOffline import RLOffline

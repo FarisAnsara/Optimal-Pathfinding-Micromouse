@@ -2,12 +2,12 @@ import random
 import numpy as np
 from matplotlib import pyplot as plt
 
-from algorithms.reinforcement_learning.RLSetup import RLSetup
+from algorithms.reinforcement_learning.RL import RL
 
 
-class DynaQSarsa(RLSetup):
+class DynaQSarsa(RL):
     def __init__(self, walls, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=100, min_epsilon=0.01,
-                 maze_width=16, maze_height=16, planning_steps=125):
+                 maze_width=16, maze_height=16, planning_steps=125,arbitrary=False):
         super().__init__(walls=walls)
         self.epsilon = epsilon
         self.alpha = alpha
@@ -19,6 +19,7 @@ class DynaQSarsa(RLSetup):
         self.planning_steps = planning_steps
         # self.model = []
         self.model = {}
+        self.arbitrary = arbitrary
 
     def learn(self):
         state = self.curr_position
@@ -26,7 +27,7 @@ class DynaQSarsa(RLSetup):
         old_orientation = self.orientation
         self.move_update_position(action)
         next_state = self.curr_position
-        reward = self.get_reward(next_state, action, old_orientation, state, dynaq=True)
+        reward = self.get_reward(next_state, action, old_orientation, state, dynaq=True, arbitrary=self.arbitrary)
         self.accumalated_reward += reward
 
         next_action = self.choose_action(next_state)
@@ -110,7 +111,7 @@ class DynaQSarsa(RLSetup):
                 agents_succeeded += 1
             else:
                 agents_failed += 1
-            self.__init__(walls=self.walls)
+            self.__init__(walls=self.walls, arbitrary=self.arbitrary)
 
         min_time_agent = min(paths_time_rewards, key=lambda k: paths_time_rewards[k][1])
         min_time_path, min_time, corresponding_rewards, min_time_q_table = paths_time_rewards[min_time_agent]

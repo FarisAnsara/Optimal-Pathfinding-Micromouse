@@ -6,7 +6,7 @@ import random
 from algorithms.utilities.Stats import Stats
 
 
-class RLSetup(MoveMouse, Walls, Utils):
+class RL(MoveMouse, Walls, Utils):
     def __init__(self, walls, maze_width=16, maze_height=16, epsilon=0.995, num_agents=15):
         self.start_memory = self.memory_usage()
         self.total_memory_used = 0
@@ -138,7 +138,7 @@ class RLSetup(MoveMouse, Walls, Utils):
             best_action = max(actions_next_states, key=lambda x: q_values[x[0]])[0]
             return best_action
 
-    def get_reward(self, next_state, action, old_orientation, curr_state, dynaq=False, fails=False):
+    def get_reward(self, next_state, action, old_orientation, curr_state, dynaq=False, fails=False, arbitrary=False):
         if next_state in self.goal_positions:
             return self.goal_reward
         elif self.is_dead_end(next_state):
@@ -146,11 +146,8 @@ class RLSetup(MoveMouse, Walls, Utils):
         elif (action, curr_state) in self.unfeasable_paths:
             return self.unfeasable_path_reward
         else:
-            # if fails:
-            #     return -0.25
-            if not dynaq:
+            if not dynaq or arbitrary:
                 return -0.25
-            # return -0.25
 
             self.get_time_taken_for_action(action, old_orientation, curr_state)
             reward = self.reward_multiple * self.tot_t
@@ -198,7 +195,7 @@ class RLSetup(MoveMouse, Walls, Utils):
         visited.add(position)
         if self.is_dead_end(position):
             self.dead_ends.append(position)
-            action = (self.get_possible_actions_next_states(position, unfeas=True)[0][0] + 2) % 4
+            self.unfeasable_paths.append((4,position))
 
         actions_next_states = self.get_possible_actions_next_states(position, unfeas=True)
         # print(position,actions_next_states)
@@ -210,4 +207,3 @@ class RLSetup(MoveMouse, Walls, Utils):
                 self.unfeasable_paths.append((action, state))
                 if sum(walls_true) >= 2:
                     self.get_unfeasable_paths(state, visited, recur=True)
-

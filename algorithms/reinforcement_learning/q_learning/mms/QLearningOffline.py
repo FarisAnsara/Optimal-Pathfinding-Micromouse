@@ -5,10 +5,10 @@ import numpy as np
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..')))
 from algorithms.mms_integration import API
-from algorithms.mms_integration.reinforcement_learning import RLMazeOffline
+from algorithms.mms_integration.reinforcement_learning import RLOffline
 
 
-class QLearningOffline(RLMazeOffline):
+class QLearningOffline(RLOffline):
     def __init__(self, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=200, min_epsilon=0.01,
                  maze_width=16, maze_height=16, reward_threshold=1):
         super().__init__()

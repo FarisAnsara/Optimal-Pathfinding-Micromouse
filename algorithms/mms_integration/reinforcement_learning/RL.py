@@ -4,7 +4,7 @@ import random
 import sys
 
 
-class RLMaze(MoveMouse, Utils, Walls):
+class RL(MoveMouse, Utils, Walls):
 
     def __init__(self, epsilon = 0.99):
         MoveMouse.__init__(self)

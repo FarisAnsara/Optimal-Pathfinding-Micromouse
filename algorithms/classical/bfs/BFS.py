@@ -9,7 +9,6 @@ class BFS(Walls, Utils, MoveMouse):
         self.total_memory_used = 0
         Walls.__init__(self, walls=walls, maze_width=maze_width, maze_height=maze_height)
         MoveMouse.__init__(self)
-        inf = self.maze_width * self.maze_height
         self.distances = [[float('inf')] * self.maze_width for _ in range(self.maze_height)]
         self.goal_positions = self.get_goal_position()
         self.directions = [self.NORTH, self.EAST, self.SOUTH, self.WEST]

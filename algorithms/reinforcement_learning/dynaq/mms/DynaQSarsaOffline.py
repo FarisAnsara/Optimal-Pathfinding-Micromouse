@@ -8,10 +8,10 @@ import random
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..')))
 
 from algorithms.mms_integration import API
-from algorithms.mms_integration.reinforcement_learning import RLMazeOffline
+from algorithms.mms_integration.reinforcement_learning import RLOffline
 
 
-class DynaQSarsaOffline(RLMazeOffline):
+class DynaQSarsaOffline(RLOffline):
     def __init__(self, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=50, min_epsilon=0,
                  maze_width=16, maze_height=16, reward_threshold=1, planning_steps=100):
         super().__init__()
@@ -31,15 +31,15 @@ class DynaQSarsaOffline(RLMazeOffline):
 
     def learn(self):
         # tf is going on!!!!!
-        log(self.curr_position)
+        # log(self.curr_position)
         self.update_walls(position=self.curr_position, orientation=self.orientation)
         state = self.curr_position
         action = self.choose_action(state)
         old_orientation = self.orientation
-        log(old_orientation)
+        # log(old_orientation)
         self.move_update_position(action, offline=True)
         next_state = self.curr_position
-        log(self.orientation)
+        # log(self.orientation)
         self.update_walls(position=self.curr_position, orientation=self.orientation)
         reward = self.get_reward(next_state, old_orientation)
         self.accumulated_reward += reward
@@ -72,13 +72,13 @@ class DynaQSarsaOffline(RLMazeOffline):
             # if episode < 5:
             #     self.epsilon = 0.99
             self.episode = episode
-            log(f'Running episode: {episode}')
+            # log(f'Running episode: {episode}')
             self.curr_position = self.start_position
             while self.curr_position not in self.goal_positions:
                 self.learn()
 
-            log(f'Prev: {prev_reward}, Current reward: {self.accumulated_reward}')
-            log(np.abs(self.accumulated_reward - prev_reward))
+            # log(f'Prev: {prev_reward}, Current reward: {self.accumulated_reward}')
+            # log(np.abs(self.accumulated_reward - prev_reward))
             rewards.append(self.accumulated_reward)
             prev_reward = self.accumulated_reward
             self.reset_env()

@@ -6,15 +6,15 @@ import random
 # import sys
 
 
-class RLMazeOffline(FloodFillOnline):
+class RLOffline(FloodFillOnline):
 
     def __init__(self, epsilon = 0.99):
         super().__init__()
         self.actions_not_to_take = []
         self.q_table = np.zeros((16, 16, 4))
         self.goal_positions = self.get_goal_position()
-        self.goal_reward = 1000
-        self.unfeasable_path_reward = -1000
+        self.goal_reward = 10000
+        self.unfeasable_path_reward = -10000
         self.unfeasable_paths = []
         self.dead_ends = []
         self.NORTH, self.EAST, self.SOUTH, self.WEST = 0, 1, 2, 3

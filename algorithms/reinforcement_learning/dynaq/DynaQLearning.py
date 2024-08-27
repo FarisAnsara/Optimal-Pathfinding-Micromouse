@@ -1,17 +1,18 @@
 import os
 import random
+import time
 import tracemalloc
 
 import numpy as np
 import psutil
 from matplotlib import pyplot as plt
 
-from algorithms.reinforcement_learning.RLSetup import RLSetup
+from algorithms.reinforcement_learning.RL import RL
 from algorithms.utilities.Utils import Utils
 
-class DynaQLearning(RLSetup, Utils):
+class DynaQLearning(RL, Utils):
     def __init__(self, walls, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=25, min_epsilon=0.01,
-                 maze_width=16, maze_height=16, planning_steps=125, fails=False):
+                 maze_width=16, maze_height=16, planning_steps=125, fails=False, arbitrary=False):
         super().__init__(walls=walls)
         self.epsilon = epsilon
         self.alpha = alpha
@@ -24,6 +25,7 @@ class DynaQLearning(RLSetup, Utils):
         # self.model = []
         self.fails = fails
         self.model = {}
+        self.arbitrary = arbitrary
 
     def learn(self):
         state = self.curr_position
@@ -31,9 +33,9 @@ class DynaQLearning(RLSetup, Utils):
         old_orientation = self.orientation
         self.move_update_position(action)
         next_state = self.curr_position
-        reward = self.get_reward(next_state, action, old_orientation, state, dynaq=True, fails=self.fails)
+        reward = self.get_reward(next_state, action, old_orientation, state, dynaq=True, fails=self.fails, arbitrary=self.arbitrary)
         self.accumalated_reward += reward
-
+        # print(reward)
         max_next_q_value = np.max(self.q_table[next_state[0], next_state[1], :])
         self.q_table[state[0], state[1], action] += self.alpha * (
                 reward + self.gamma * max_next_q_value - self.q_table[state[0], state[1], action]
@@ -104,7 +106,7 @@ class DynaQLearning(RLSetup, Utils):
                 agents_succeeded += 1
             else:
                 agents_failed += 1
-            self.__init__(walls=self.walls, fails=self.fails)
+            self.__init__(walls=self.walls, fails=self.fails, arbitrary=self.arbitrary)
 
         min_time_agent = min(paths_time_rewards, key=lambda k: paths_time_rewards[k][1])
         min_time_path, min_time, corresponding_rewards, min_time_q_table = paths_time_rewards[min_time_agent]
@@ -121,3 +123,5 @@ class DynaQLearning(RLSetup, Utils):
         # plt.ylabel('Accumulated Reward')
         # plt.title('DynaQLearning Learning')
         # plt.show()
+        #
+        # time.sleep(3)
