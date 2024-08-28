@@ -70,7 +70,7 @@ class DynaQSarsa(RL):
         while agents_succeeded < 3:
             agent += 1
             print(f'running agent {agent}')
-            self.get_all_unfeasable()
+            self.get_all_unfeasible()
             rewards = []
             episode_zero_steps = 0
             for episode in range(self.max_episodes):

@@ -15,7 +15,7 @@ class RL(MoveMouse, Walls, Utils):
         self.q_table = np.zeros((16, 16, 4))
         self.goal_positions = self.get_goal_position()
         self.goal_reward = 10000
-        self.unfeasable_path_reward = -10000
+        self.unfeasable_path_reward = -100
         self.unfeasable_paths = []
         self.dead_ends = []
         self.NORTH, self.EAST, self.SOUTH, self.WEST = 0, 1, 2, 3
@@ -106,16 +106,16 @@ class RL(MoveMouse, Walls, Utils):
                     if unfeas or (direction + 2) % 4 != self.orientation:
                         actions_next_states.append((direction, neighbor_value))
                 else:
-                    self.q_table[position[0]][position[1]][direction] = -100000
+                    self.q_table[position[0]][position[1]][direction] = -10
             else:
                 if nx < 0:
-                    self.q_table[position[0]][position[1]][3] = -100000
+                    self.q_table[position[0]][position[1]][3] = -10
                 if nx > 15:
-                    self.q_table[position[0]][position[1]][1] = -100000
+                    self.q_table[position[0]][position[1]][1] = -10
                 if ny < 0:
-                    self.q_table[position[0]][position[1]][2] = -100000
+                    self.q_table[position[0]][position[1]][2] = -10
                 if ny > 15:
-                    self.q_table[position[0]][position[1]][0] = -100000
+                    self.q_table[position[0]][position[1]][0] = -10
         return actions_next_states
 
     def is_dead_end(self, position):
@@ -163,6 +163,13 @@ class RL(MoveMouse, Walls, Utils):
                 max_q_val[i][j] = int(max_val)
         return max_q_val
 
+    def get_min_q_values(self):
+        min_q_val = [[0 for _ in range(16)] for _ in range(16)]
+        for i in range(self.q_table.shape[0]):
+            for j in range(self.q_table.shape[1]):
+                min_val = np.min(self.q_table[i, j])
+                min_q_val[i][j] = int(min_val)
+        return min_q_val
 
     def early_stopping(self):
         if abs(self.accumalated_reward - self.previous_reward) <= self.threshold:
@@ -177,14 +184,14 @@ class RL(MoveMouse, Walls, Utils):
         stats = Stats()
         return stats.get_time_from_path(self.get_path())
 
-    def get_all_unfeasable(self):
+    def get_all_unfeasible(self):
         for state in self.positions:
             try:
-                self.get_unfeasable_paths(state)
+                self.get_unfeasible_paths(state)
             except Exception as e:
                 pass
 
-    def get_unfeasable_paths(self, position, visited=None, recur=False):
+    def get_unfeasible_paths(self, position, visited=None, recur=False):
         if not self.is_dead_end(position):
             if not recur:
                 return
@@ -206,4 +213,4 @@ class RL(MoveMouse, Walls, Utils):
                 action = (act_state[0] + 2) % 4
                 self.unfeasable_paths.append((action, state))
                 if sum(walls_true) >= 2:
-                    self.get_unfeasable_paths(state, visited, recur=True)
+                    self.get_unfeasible_paths(state, visited, recur=True)

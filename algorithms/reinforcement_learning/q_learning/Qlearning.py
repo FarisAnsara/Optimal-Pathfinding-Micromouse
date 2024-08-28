@@ -40,7 +40,7 @@ class QLearning(RL):
         while agents_succeeded < 3:
             agent += 1
             print(f'running agent {agent}')
-            self.get_all_unfeasable()
+            self.get_all_unfeasible()
             rewards = []
             for episode in range(self.max_episodes):
                 self.accumalated_reward = 0
