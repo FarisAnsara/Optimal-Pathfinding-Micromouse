@@ -84,7 +84,7 @@ class DynaQLearning(RL, Utils):
                         break
 
 
-                # print(f'episode: {episode}, steps: {steps}')
+                print(f'episode: {episode}, steps: {steps}')
                 rewards.append(self.accumalated_reward)
                 if self.early_stopping():
                     break
