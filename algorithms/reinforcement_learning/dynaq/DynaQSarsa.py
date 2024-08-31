@@ -129,3 +129,5 @@ class DynaQSarsa(RL):
         # plt.ylabel('Accumulated Reward')
         # plt.title('DynaQSarsa Learning')
         # plt.show()
+
+        return corresponding_rewards

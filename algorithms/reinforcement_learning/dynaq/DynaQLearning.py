@@ -125,3 +125,5 @@ class DynaQLearning(RL, Utils):
         # plt.show()
         #
         # time.sleep(3)
+
+        return corresponding_rewards

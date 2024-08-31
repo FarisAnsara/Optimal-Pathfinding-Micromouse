@@ -81,3 +81,5 @@ class Sarsa(RL):
         # plt.ylabel('Accumulated Reward')
         # plt.title('Sarsa Offline Learning')
         # plt.show()
+
+        return corresponding_rewards
