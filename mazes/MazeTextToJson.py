@@ -16,32 +16,26 @@ def convert_to_dictionary(maze_str):
             west = (maze_lines[j][i] == '|') if i != 0 else True
 
             x, y = i // 4, j // 2
-            if x < 16 and y < 16:  # Ensure that the indices do not exceed 15
+            if x < 16 and y < 16:
                 maze_dict[(x, y)] = [north, east, south, west]
 
     return maze_dict
 
 
 def save_maze(maze_dict, filename):
-    # Convert tuple keys to strings
     maze_dict_str_keys = {str(k): v for k, v in maze_dict.items()}
     with open(filename, 'w') as json_file:
         json.dump(maze_dict_str_keys, json_file, indent=4)
 
 
-# Create the competition_json directory if it doesn't exist
 output_dir = 'competition_json'
 os.makedirs(output_dir, exist_ok=True)
 
-# Use glob to find all .txt files in the 'classic' directory
 for filename in glob.glob(os.path.join('compitetion', '*.txt')):
     with open(filename) as file:
         maze_txt = file.read()
         maze_dict = convert_to_dictionary(maze_txt)
-        # Define the output file path, changing the extension to .json
         json_filename = os.path.join('competition_json', os.path.splitext(os.path.basename(filename))[0] + '.json')
-
-        # Save the dictionary as a JSON file
         save_maze(maze_dict, json_filename)
 
 
@@ -58,13 +52,13 @@ def draw_maze(maze_file):
     goal_positions = get_goal_position()
     for (x, y), wall in walls.items():
         color = 'r' if (x, y) in goal_positions else 'k'
-        if wall[0]:  # NORTH
+        if wall[0]:
             ax.plot([x, x + 1], [y + 1, y + 1], color=color)
-        if wall[1]:  # EAST
+        if wall[1]:
             ax.plot([x + 1, x + 1], [y, y + 1], color=color)
-        if wall[2]:  # SOUTH
+        if wall[2]:
             ax.plot([x, x + 1], [y, y], color=color)
-        if wall[3]:  # WEST
+        if wall[3]:
             ax.plot([x, x], [y, y + 1], color=color)
     plt.xlim(0, 16)
     plt.ylim(0, 16)

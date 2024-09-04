@@ -14,7 +14,6 @@ class ExploreMaze(MoveMouse, Utils):
         self.mazeHeight = maze_height
         self.positions = [(n, m) for n in range(self.mazeWidth) for m in range(self.mazeHeight)]
         self.walls = {a: [False, False, False, False] for a in self.positions}
-        # FloodFill.__init__(self, walls=self.walls)
         self.maze = maze
         inf = self.mazeWidth * self.mazeHeight
         self.flood_map = [[inf for _ in range(self.mazeWidth)] for _ in range(self.mazeHeight)]

@@ -1,13 +1,11 @@
 import random
 import numpy as np
-from matplotlib import pyplot as plt
-
 from algorithms.reinforcement_learning.RL import RL
 
 
 class DynaQSarsa(RL):
     def __init__(self, walls, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=100, min_epsilon=0.01,
-                 maze_width=16, maze_height=16, planning_steps=125,arbitrary=False):
+                 planning_steps=125, arbitrary=False):
         super().__init__(walls=walls)
         self.epsilon = epsilon
         self.alpha = alpha
@@ -17,7 +15,6 @@ class DynaQSarsa(RL):
         self.max_episodes = max_episodes
         self.goal_positions = self.get_goal_position()
         self.planning_steps = planning_steps
-        # self.model = []
         self.model = {}
         self.arbitrary = arbitrary
 
@@ -36,23 +33,10 @@ class DynaQSarsa(RL):
             state[0], state[1], action]
         )
 
-        # self.model.append((state, action, reward, next_state))
         self.model[(state, action)] = (reward, next_state)
-
-        # if self.episode > 0:
-        #     for _ in range(self.planning_steps):
-        #         # s, a, r, ns = random.choice(self.model)
-        #         s, a = random.choice(list(self.model.keys()))
-        #         r, ns = self.model[(s, a)]
-        #         na = self.choose_action(ns)
-        #         n_q_value = self.q_table[ns[0], ns[1], na]
-        #         self.q_table[s[0], s[1], a] += self.alpha * (
-        #                 r + self.gamma * n_q_value - self.q_table[s[0], s[1], a]
-        #     )
 
         if self.episode > 0:
             for _ in range(self.planning_steps):
-                # s, a, r, ns = random.choice(self.model)
                 s, a = random.choice(list(self.model.keys()))
                 r, ns = self.model[(s, a)]
                 max_next_q_value = np.max(self.q_table[ns[0], ns[1], :])
@@ -83,24 +67,15 @@ class DynaQSarsa(RL):
                 while self.curr_position not in self.goal_positions:
                     self.learn()
                     steps += 1
-                    # print(self.curr_position, steps)
                     if steps > episode_zero_steps + 5000 and episode != 0:
-                        # agents_failed += 1
                         print(f'agent: {agent} failed')
-                        # self.fails = True
                         break
 
-                # print(f'episode: {episode}, steps: {steps}')
                 rewards.append(self.accumalated_reward)
                 if self.early_stopping():
                     break
                 self.reset_env()
                 self.previous_reward = self.accumalated_reward
-                # if agents_failed >= 3:
-                #     print(f'agent: {agent} failed, moving on to use distance')
-                #     self.fails = True
-                #     agents_failed = 0
-                #     break
                 if steps > episode_zero_steps + 5000 and episode != 0:
                     break
                 if episode == 0:
@@ -120,14 +95,4 @@ class DynaQSarsa(RL):
 
         end_memory = self.memory_usage()
         self.total_memory_used = end_memory - self.start_memory
-        # print(f'Choose path: {self.path}, time: {min_time}')
-
-
-        # plt.figure()
-        # plt.plot(range(len(corresponding_rewards)), corresponding_rewards)
-        # plt.xlabel('Episodes')
-        # plt.ylabel('Accumulated Reward')
-        # plt.title('DynaQSarsa Learning')
-        # plt.show()
-
         return corresponding_rewards

@@ -14,10 +14,10 @@ class FloodFill(Walls, Utils, MoveMouse):
         self.goalPositions = self.get_goal_position()
         self.directions = [self.NORTH, self.EAST, self.SOUTH, self.WEST]
         self.directionVectors_inverse = {
-            (0, 1): self.NORTH,  # Moving North
-            (1, 0): self.EAST,  # Moving East
-            (0, -1): self.SOUTH,  # Moving South
-            (-1, 0): self.WEST  # Moving West
+            (0, 1): self.NORTH,
+            (1, 0): self.EAST,
+            (0, -1): self.SOUTH,
+            (-1, 0): self.WEST
         }
 
     def flood_fill(self):

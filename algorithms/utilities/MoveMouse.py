@@ -14,10 +14,6 @@ class MoveMouse:
         self.turns = 0
         self.path = []
         self.tot_t = 0
-        # self.reward_discount = 0.9
-        # self.reward_multiple = 10
-        # self.min_reward_multiple = 0.0001
-
 
     def move_update_position(self, direction):
         if direction == self.orientation:
@@ -37,12 +33,6 @@ class MoveMouse:
         self.turns = 0
         self.path = []
         self.tot_t = 0
-        # self.reward_discount = 0.9
-        # self.reward_multiple = 10
-        # self.min_reward_multiple = 0.00001
-        # self.reward_discount = 0.9
-        # self.reward_multiple = 1
-        # self.min_reward_multiple = 0.00001
 
     def get_stats(self):
         path_length = len(self.path)

@@ -38,14 +38,12 @@ class Dijkstra(Walls, Utils, MoveMouse):
                 neighbor = (x + dx, y + dy)
                 if (0 <= neighbor[0] < self.maze_width and 0 <= neighbor[1] < self.maze_height
                         and not self.wall_between(position, direction)):
-                    new_distance = current_distance + 1  # Assuming uniform cost
+                    new_distance = current_distance + 1
                     if new_distance < self.distances[neighbor[0]][neighbor[1]]:
                         self.distances[neighbor[0]][neighbor[1]] = new_distance
                         heapq.heappush(pq, (new_distance, neighbor))
 
     def find_shortest_path_to_goal(self):
-        # Start memory tracking
-        # Run the algorithm
         self.dijkstra()
         goal_position = min(self.goal_positions, key=lambda pos: self.distances[pos[0]][pos[1]])
         self.curr_position = goal_position

@@ -73,24 +73,17 @@ class MazeGenerator:
                 self.walls[(nx, ny)][3] = False
 
     def goal_positions_setup(self):
-        # Define goal positions
         goal_positions = [(8, 8), (7, 8), (8, 7), (7, 7)]
         directions = [[0, 1], [0, 3], [1, 2], [2, 3]]
 
-        # Close off all walls within the goal area
         for i, val in enumerate(goal_positions):
             self.walls[val] = [False, False, False, False]
             for dir in directions[i]:
                 self.walls[val][dir] = True
 
-        # Randomly select one cell in the goal positions to be the entrance
         entrance_position = random.choice(goal_positions)
         i = goal_positions.index(entrance_position)
         entrance_direction = random.choice(directions[i])
-        # entrance_directions = [0, 1, 2, 3]  # North, East, South, West
-        # random.shuffle(entrance_directions)
-
-        # for direction in entrance_directions:
         dx, dy = [(0, 1), (1, 0), (0, -1), (-1, 0)][entrance_direction]
         ex, ey = entrance_position[0] + dx, entrance_position[1] + dy
         if self.is_within_bounds(ex, ey):
@@ -125,51 +118,44 @@ class MazeGenerator:
                 current = queue.popleft()
                 x, y = current
 
-                # Check if we've found a path to the start
                 if current == self.start_position:
                     continue
 
                 for direction, (dx, dy) in enumerate([(0, 1), (1, 0), (0, -1), (-1, 0)]):
                     neighbor = (x + dx, y + dy)
 
-                    # Check if neighbor is within bounds and not visited
                     if self.is_within_bounds(x + dx, y + dy) and neighbor not in visited:
-                        if not self.walls[(x, y)][direction]:  # Check if there is no wall
+                        if not self.walls[(x, y)][direction]:
                             queue.append(neighbor)
                             visited.add(neighbor)
                             parent_map[neighbor] = current
 
-                        elif random.random() < 0.1:  # Randomly remove a wall
+                        elif random.random() < 0.1:
                             self.remove_wall((x, y), neighbor)
                             queue.append(neighbor)
                             visited.add(neighbor)
                             parent_map[neighbor] = current
 
-            # Now we want to ensure we have at least 3 paths by removing additional walls if needed
             unique_paths = set()
             for position in visited:
                 unique_paths.add(position)
                 if len(unique_paths) >= 3:
                     break
 
-            # if len(unique_paths) < 3:
-            #     self.remove_random_walls_for_additional_paths(unique_paths)
 
     def remove_random_walls_for_additional_paths(self, unique_paths):
-        """Remove random walls to create additional paths."""
         for position in unique_paths:
             x, y = position
             for direction, (dx, dy) in enumerate([(0, 1), (1, 0), (0, -1), (-1, 0)]):
                 neighbor = (x + dx, y + dy)
                 if self.is_within_bounds(x + dx, y + dy):
-                    if random.random() < 0.3:  # Randomly remove a wall
+                    if random.random() < 0.3:
                         self.remove_wall((x, y), neighbor)
 
     def is_within_bounds(self, x, y):
         return 0 <= x < self.width and 0 <= y < self.height
 
     def is_solvable(self):
-        """Check if the maze is solvable by ensuring at least one path to the goal positions."""
         stack = [self.start_position]
         visited = {self.start_position}
         while stack:
@@ -210,13 +196,13 @@ def draw_maze(maze_file):
     goal_positions = get_goal_position()
     for (x, y), wall in walls.items():
         color = 'r' if (x, y) in goal_positions else 'k'
-        if wall[0]:  # NORTH
+        if wall[0]:
             ax.plot([x, x + 1], [y + 1, y + 1], color=color)
-        if wall[1]:  # EAST
+        if wall[1]:
             ax.plot([x + 1, x + 1], [y, y + 1], color=color)
-        if wall[2]:  # SOUTH
+        if wall[2]:
             ax.plot([x, x + 1], [y, y], color=color)
-        if wall[3]:  # WEST
+        if wall[3]:
             ax.plot([x, x], [y, y + 1], color=color)
     plt.xlim(0, 16)
     plt.ylim(0, 16)
@@ -235,5 +221,4 @@ def generate_mazes(num_mazes, width, height, output_dir):
 
 if __name__ == "__main__":
     generate_mazes(3000, 16, 16, "mazes\generated")
-    # draw_maze("Reinforcement_Learning\Deep_RL\mazes\maze_0.json")
-    
+

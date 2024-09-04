@@ -5,8 +5,7 @@ from algorithms.reinforcement_learning.RL import RL
 
 
 class Sarsa(RL):
-    def __init__(self, walls, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=1000, min_epsilon=0.01,
-                 maze_width=16, maze_height=16):
+    def __init__(self, walls, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=1000, min_epsilon=0.01):
         super().__init__(walls=walls)
         self.epsilon = epsilon
         self.alpha = alpha
@@ -52,8 +51,6 @@ class Sarsa(RL):
                     self.learn()
                     steps += 1
 
-                # print(f'epsiode: {episode}, steps: {steps}')
-
                 rewards.append(self.accumalated_reward)
                 if self.early_stopping():
                     break
@@ -69,17 +66,4 @@ class Sarsa(RL):
         min_time_path, min_time, corresponding_rewards, min_time_q_table = paths_time_rewards[min_time_agent]
         self.path = min_time_path
         self.q_table = min_time_q_table
-
-        #
-        # end_memory = self.memory_usage()
-        # self.total_memory_used = end_memory - self.start_memory
-        # print(f'Choose path: {self.path}, time: {min_time}')
-        #
-        # plt.figure()
-        # plt.xlabel('Episodes')
-        # plt.plot(range(len(corresponding_rewards)), corresponding_rewards)
-        # plt.ylabel('Accumulated Reward')
-        # plt.title('Sarsa Offline Learning')
-        # plt.show()
-
         return corresponding_rewards

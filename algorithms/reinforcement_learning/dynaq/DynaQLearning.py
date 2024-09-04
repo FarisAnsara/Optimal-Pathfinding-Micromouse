@@ -1,18 +1,12 @@
-import os
 import random
-import time
-import tracemalloc
-
 import numpy as np
-import psutil
-from matplotlib import pyplot as plt
-
 from algorithms.reinforcement_learning.RL import RL
 from algorithms.utilities.Utils import Utils
 
+
 class DynaQLearning(RL, Utils):
     def __init__(self, walls, epsilon=0.99, alpha=0.1, gamma=0.9, epsilon_decay=0.99, max_episodes=25, min_epsilon=0.01,
-                 maze_width=16, maze_height=16, planning_steps=125, fails=False, arbitrary=False):
+                 planning_steps=125, fails=False, arbitrary=False):
         super().__init__(walls=walls)
         self.epsilon = epsilon
         self.alpha = alpha
@@ -22,7 +16,6 @@ class DynaQLearning(RL, Utils):
         self.max_episodes = max_episodes
         self.goal_positions = self.get_goal_position()
         self.planning_steps = planning_steps
-        # self.model = []
         self.fails = fails
         self.model = {}
         self.arbitrary = arbitrary
@@ -33,19 +26,17 @@ class DynaQLearning(RL, Utils):
         old_orientation = self.orientation
         self.move_update_position(action)
         next_state = self.curr_position
-        reward = self.get_reward(next_state, action, old_orientation, state, dynaq=True, fails=self.fails, arbitrary=self.arbitrary)
+        reward = self.get_reward(next_state, action, old_orientation, state, dynaq=True, fails=self.fails,
+                                 arbitrary=self.arbitrary)
         self.accumalated_reward += reward
-        # print(reward)
         max_next_q_value = np.max(self.q_table[next_state[0], next_state[1], :])
         self.q_table[state[0], state[1], action] += self.alpha * (
                 reward + self.gamma * max_next_q_value - self.q_table[state[0], state[1], action]
         )
-        # self.model.append((state, action, reward, next_state))
         self.model[(state, action)] = (reward, next_state)
 
         if self.episode > 0:
             for _ in range(self.planning_steps):
-                # s, a, r, ns = random.choice(self.model)
                 s, a = random.choice(list(self.model.keys()))
                 r, ns = self.model[(s, a)]
                 max_next_q_value = np.max(self.q_table[ns[0], ns[1], :])
@@ -69,7 +60,6 @@ class DynaQLearning(RL, Utils):
             episode_zero_steps = 0
             for episode in range(self.max_episodes):
                 steps = 0
-                # print(f'runnign episode: {episode}')
                 self.accumalated_reward = 0
                 self.episode = episode
                 self.curr_position = self.start_position
@@ -78,11 +68,8 @@ class DynaQLearning(RL, Utils):
                     self.learn()
                     steps += 1
                     if steps > episode_zero_steps + 5000 and episode != 0:
-                        # agents_failed += 1
                         print(f'agent: {agent} failed')
-                        # self.fails = True
                         break
-
 
                 print(f'episode: {episode}, steps: {steps}')
                 rewards.append(self.accumalated_reward)
@@ -90,16 +77,10 @@ class DynaQLearning(RL, Utils):
                     break
                 self.reset_env()
                 self.previous_reward = self.accumalated_reward
-                # if agents_failed >= 3:
-                #     print(f'agent: {agent} failed, moving on to use distance')
-                #     self.fails = True
-                #     agents_failed = 0
-                #     break
                 if steps > episode_zero_steps + 5000 and episode != 0:
                     break
                 if episode == 0:
                     episode_zero_steps = steps if steps <= 5000 else 5000
-
 
             if self.path:
                 paths_time_rewards[agent] = (self.path, self.get_time_from_path(), rewards, self.q_table)
@@ -115,15 +96,4 @@ class DynaQLearning(RL, Utils):
 
         end_memory = self.memory_usage()
         self.total_memory_used = end_memory - self.start_memory
-
-
-        # plt.figure()
-        # plt.plot(range(len(corresponding_rewards)), corresponding_rewards)
-        # plt.xlabel('Episodes')
-        # plt.ylabel('Accumulated Reward')
-        # plt.title('DynaQLearning Learning')
-        # plt.show()
-        #
-        # time.sleep(3)
-
         return corresponding_rewards
