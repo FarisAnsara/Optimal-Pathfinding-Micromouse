@@ -59,7 +59,15 @@ class Utils:
             ax.add_patch(plt.Rectangle((x, y), 1, 1, color=color, alpha=0.3))
             if dist_map:
                 font_size = min(7, 120 // max(maze_width, maze_height))  # Further reduced font size
-                ax.text(x + 0.5, y + 0.5, f"{dist_map[x][y]:0.1f}", ha='center', va='center', fontsize=font_size)
+                ax.text(x + 0.5, y + 0.5, f"{dist_map[x][y]}", ha='center', va='center', fontsize=font_size)
+
+            # if (x,y) in Utils.get_goal_position():
+            #     font_size = min(7, 120 // max(maze_width, maze_height))  # Further reduced font size
+            #     ax.text(x + 0.5, y + 0.5, f"G", ha='center', va='center', fontsize=font_size)
+
+            # if (x, y) == (0, 0):
+            #     font_size = min(7, 120 // max(maze_width, maze_height))  # Further reduced font size
+            #     ax.text(x + 0.5, y + 0.5, f"S", ha='center', va='center', fontsize=font_size)
 
             if wall[0]:  # NORTH
                 ax.plot([x, x + 1], [y + 1, y + 1], color='black')
@@ -75,6 +83,7 @@ class Utils:
         plt.gca().set_aspect('equal', adjustable='box')
         plt.gca()
         plt.show()
+        return fig
 
     @staticmethod
     def memory_usage():

@@ -5,7 +5,6 @@ import numpy as np
 
 class Stats:
 
-
     def __init__(self):
         self.start_time = time.perf_counter_ns()
         self.u = 0
@@ -46,11 +45,11 @@ class Stats:
 
     def get_turn_time(self, action, old_orientation):
         if action == (old_orientation + 2) % 4:
-            return 0    # Because mouse can reverse
+            return 0
         return np.sqrt((self.d * (np.pi/2)) / (2*self.a))
 
     def get_time_from_path(self, path):
-        counter = -0.5   # As we start from the middle of the start position
+        counter = -0.5
         previous_orientation = self.NORTH
         previous_position = path[0]
         tot_time = 0
@@ -68,8 +67,7 @@ class Stats:
             t_turn = self.get_turn_time(orientation, previous_orientation)
             t_acc = self.get_acceleration_time(self.s_stop)
             tot_time += t_acc_dec + t_turn + t_acc
-            self.tot_dist += dist * 2   # Multiply by 2 to account for the acceleration distance then deceleration
-            # print(position, t_acc_dec, t_turn, t_acc)
+            self.tot_dist += dist * 2
             self.u = 0
             counter = 0
             previous_position = position
@@ -81,4 +79,3 @@ class Stats:
         dist = self.tot_dist
         self.tot_dist = 0
         return dist
-
