@@ -41,13 +41,10 @@ class SarsaOffline(RLOffline):
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
 
     def run_sarsa(self):
-        # Todo: implement Early stopping
         rewards = []
         prev_reward = 0
         for episode in range(self.max_episodes):
             self.accumulated_reward = 0
-            # if episode < 5:
-            #     self.epsilon = 0.99
             self.episode = episode
             log(f'Running episode: {episode}')
             self.curr_position = self.start_position
@@ -62,7 +59,6 @@ class SarsaOffline(RLOffline):
             self.curr_position = self.start_position
             self.orientation = self.NORTH
 
-            # Displaying the max Q-values
             self.update_q_vals_on_API()
 
         plt.figure()

@@ -13,10 +13,10 @@ class BFSOffline(FloodFillOnline):
         super().__init__()
         self.distances = [[float('inf')] * self.mazeWidth for _ in range(self.mazeHeight)]
         self.directionVectors_inverse = {
-            (0, 1): self.NORTH,  # Moving North
-            (1, 0): self.EAST,  # Moving East
-            (0, -1): self.SOUTH,  # Moving South
-            (-1, 0): self.WEST  # Moving West
+            (0, 1): self.NORTH,
+            (1, 0): self.EAST,
+            (0, -1): self.SOUTH,
+            (-1, 0): self.WEST
         }
 
     def run_bfs(self):
@@ -84,11 +84,11 @@ def log(string):
 
 
 bfs = BFSOffline()
-bfs.move_and_floodfill()  # Discover the maze layout first using floodfill
+bfs.move_and_floodfill()
 bfs.go_back_to_start()
 API.clearAllColor()
 API.clearAllText()
-bfs.run_bfs()  # Now perform BFS on the discovered maze
+bfs.run_bfs()
 bfs.update_text_BFS()
 time.sleep(2)
 bfs.take_shortest_path()

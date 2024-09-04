@@ -54,7 +54,6 @@ class DynaQLearningOffline(RLOffline):
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
 
     def run_DynaQLearning(self):
-        # Todo: implement Early stopping
         rewards = []
         prev_reward = 0
         for episode in range(self.max_episodes):
@@ -73,7 +72,6 @@ class DynaQLearningOffline(RLOffline):
             self.curr_position = self.start_position
             self.orientation = self.NORTH
 
-            # Displaying the max Q-values
             self.update_q_vals_on_API()
 
         plt.figure()
@@ -92,9 +90,7 @@ def log(string):
 def main():
     log("Running DynaQlearning algorithm offline...")
     exp = DynaQLearningOffline()
-    # flood = FloodFill()
     exp.move_and_floodfill()
-    # exp.get_dead_ends()
     exp.get_all_unfeasable()
     log(exp.unfeasable_paths)
     API.setColor(1, 3, 'k')

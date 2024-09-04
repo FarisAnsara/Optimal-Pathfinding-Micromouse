@@ -43,13 +43,10 @@ class QLearningOffline(RLOffline):
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
 
     def run_DynaQLearning(self):
-        # Todo: implement Early stopping
         rewards = []
         prev_reward = 0
         for episode in range(self.max_episodes):
             self.accumulated_reward = 0
-            # if episode < 5:
-            #     self.epsilon = 0.99
             self.episode = episode
             log(f'Running episode: {episode}')
             self.curr_position = self.start_position

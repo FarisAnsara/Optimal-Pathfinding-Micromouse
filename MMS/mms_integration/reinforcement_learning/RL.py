@@ -30,7 +30,6 @@ class RL(MoveMouse, Utils, Walls):
         actions_next_states = []
         if self.is_dead_end(position) and self.wall_between(position,self.orientation):
             self.dead_ends.append(position)
-            # API.setColor(position[0], position[1], 'r')
             for direction in [self.NORTH, self.EAST, self.SOUTH, self.WEST]:
                 if not self.wall_between(position, direction):
                     action = direction
@@ -64,7 +63,6 @@ class RL(MoveMouse, Utils, Walls):
         return sum(self.walls[position]) == 3
 
     def get_unfeasable_paths(self, position, visited=None, recur=False):
-        # self.update_walls(position, self.orientation)
         if not self.is_dead_end(position):
             if not recur:
                 return
@@ -75,7 +73,6 @@ class RL(MoveMouse, Utils, Walls):
         visited.add(position)
         if self.is_dead_end(position):
             action = (self.get_possible_actions_next_states(position, unfeas=True)[0][0] + 2) % 4
-            # API.setColor(position[0], position[1], 'b')
 
         actions_next_states = self.get_possible_actions_next_states(position, unfeas=True)
         for act_state in actions_next_states:
@@ -84,7 +81,6 @@ class RL(MoveMouse, Utils, Walls):
                 walls_true = [wall == True for wall in self.walls[state]]
                 action = (act_state[0] + 2) % 4
                 self.unfeasable_paths.append((action, state))
-                # API.setColor(state[0], state[1], 'b')
                 if sum(walls_true) >= 2:
                     self.get_unfeasable_paths(state, visited, recur=True)
 

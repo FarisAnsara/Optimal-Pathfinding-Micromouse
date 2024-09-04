@@ -45,13 +45,10 @@ class QLearningOnline(RL):
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
 
     def run_qlearning(self):
-        # Todo: implement Early stopping
         rewards = []
         prev_reward = 0
         for episode in range(self.max_episodes):
             self.accumulated_reward = 0
-            # if episode < 5:
-            #     self.epsilon = 0.99
             self.episode = episode
             log(f'Running episode: {episode}')
             self.curr_position = self.start_position
@@ -66,11 +63,10 @@ class QLearningOnline(RL):
             self.curr_position = self.start_position
             self.orientation = self.NORTH
 
-            # Displaying the max Q-values
             for i in range(self.q_table.shape[0]):
                 for j in range(self.q_table.shape[1]):
                     max_val = np.max(self.q_table[i, j])
-                    API.setText(i, j, str(round(max_val, 2)))  # Display the Q-value
+                    API.setText(i, j, str(round(max_val, 2)))
 
         plt.figure()
         plt.plot(range(len(rewards)), rewards)

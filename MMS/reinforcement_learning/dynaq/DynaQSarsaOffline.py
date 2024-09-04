@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import random
 
-# Adding parent directories to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
                                              '../../../algorithms/reinforcement_learning/dynaq', '..', '..', '..')))
 
@@ -30,16 +29,12 @@ class DynaQSarsaOffline(RLOffline):
         self.model = []
 
     def learn(self):
-        # tf is going on!!!!!
-        # log(self.curr_position)
         self.update_walls(position=self.curr_position, orientation=self.orientation)
         state = self.curr_position
         action = self.choose_action(state)
         old_orientation = self.orientation
-        # log(old_orientation)
         self.move_update_position(action, offline=True)
         next_state = self.curr_position
-        # log(self.orientation)
         self.update_walls(position=self.curr_position, orientation=self.orientation)
         reward = self.get_reward(next_state, old_orientation)
         self.accumulated_reward += reward
@@ -64,28 +59,21 @@ class DynaQSarsaOffline(RLOffline):
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
 
     def run_DynaQ_sarsa(self):
-        # Todo: implement Early stopping
         rewards = []
         prev_reward = 0
         for episode in range(self.max_episodes):
             self.accumulated_reward = 0
-            # if episode < 5:
-            #     self.epsilon = 0.99
             self.episode = episode
-            # log(f'Running episode: {episode}')
             self.curr_position = self.start_position
             while self.curr_position not in self.goal_positions:
                 self.learn()
 
-            # log(f'Prev: {prev_reward}, Current reward: {self.accumulated_reward}')
-            # log(np.abs(self.accumulated_reward - prev_reward))
             rewards.append(self.accumulated_reward)
             prev_reward = self.accumulated_reward
             self.reset_env()
             self.curr_position = self.start_position
             self.orientation = self.NORTH
 
-            # Displaying the max Q-values
             self.update_q_vals_on_API()
 
         plt.figure()

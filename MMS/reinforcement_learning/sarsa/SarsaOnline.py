@@ -3,7 +3,6 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 
-# Adding parent directories to sys.path
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
                                              '../../../algorithms/reinforcement_learning/sarsa', '..', '..', '..')))
 from MMS.mms_integration import API
@@ -45,7 +44,6 @@ class SarsaOnline(RL):
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
 
     def run_sarsa(self):
-        # Todo: implement early stopping
         rewards = []
         prev_reward = 0
         for episode in range(self.max_episodes):
@@ -66,11 +64,10 @@ class SarsaOnline(RL):
             self.curr_position = self.start_position
             self.orientation = self.NORTH
 
-            # Displaying the max Q-values
             for i in range(self.q_table.shape[0]):
                 for j in range(self.q_table.shape[1]):
                     max_val = np.max(self.q_table[i, j])
-                    API.setText(i, j, str(round(max_val, 2)))  # Display the Q-value
+                    API.setText(i, j, str(round(max_val, 2)))
 
         plt.figure()
         plt.plot(range(len(rewards)), rewards)

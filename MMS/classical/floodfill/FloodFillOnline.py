@@ -47,7 +47,7 @@ class FloodFillOnline(MoveMouse, Walls, Utils):
                 break
 
             if not neighbors_desc:
-                self.flood_map = self.flood_fill(self.get_goal_position())  # Use the returned flood map
+                self.flood_map = self.flood_fill(self.get_goal_position())
                 self.move_and_floodfill()
 
             directions = [neighbors_desc[i][0] for i in range(len(neighbors_desc))]

@@ -13,10 +13,10 @@ class DijkstraOffline(FloodFillOnline):
         super().__init__()
         self.distances = [[float('inf')] * self.mazeWidth for _ in range(self.mazeHeight)]
         self.directionVectors_inverse = {
-            (0, 1): self.NORTH,  # Moving North
-            (1, 0): self.EAST,  # Moving East
-            (0, -1): self.SOUTH,  # Moving South
-            (-1, 0): self.WEST  # Moving West
+            (0, 1): self.NORTH,
+            (1, 0): self.EAST,
+            (0, -1): self.SOUTH,
+            (-1, 0): self.WEST
         }
         self.path = []
         self.goal_positions = self.get_goal_position()

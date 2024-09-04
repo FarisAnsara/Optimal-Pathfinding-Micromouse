@@ -3,8 +3,6 @@ import sys
 from MMS.mms_integration import API
 from MMS.classical.floodfill import FloodFillOnline
 import random
-# import sys
-
 
 class RLOffline(FloodFillOnline):
 
@@ -90,7 +88,6 @@ class RLOffline(FloodFillOnline):
                 num_walls += 1
         if num_walls == 2:
             self.actions_not_to_take.append((position, dir_inv))
-            # self.get_path_leading(position, )
 
     def get_unfeasable_paths(self, position, visited=None, recur=False):
         if not self.is_dead_end(position):
@@ -117,7 +114,6 @@ class RLOffline(FloodFillOnline):
     def get_possible_actions_next_states(self, position, unfeas=False):
         actions_next_states = []
         if self.is_dead_end(position) and self.wall_between(position, self.orientation):
-            # self.dead_ends.append(position)
             API.setColor(position[0], position[1], 'r')
             for direction in [self.NORTH, self.EAST, self.SOUTH, self.WEST]:
                 if not self.wall_between(position, direction):
