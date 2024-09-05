@@ -64,7 +64,7 @@ class Utils:
             # if (x,y) in Utils.get_goal_position():
             #     font_size = min(7, 120 // max(maze_width, maze_height))  # Further reduced font size
             #     ax.text(x + 0.5, y + 0.5, f"G", ha='center', va='center', fontsize=font_size)
-
+            #
             # if (x, y) == (0, 0):
             #     font_size = min(7, 120 // max(maze_width, maze_height))  # Further reduced font size
             #     ax.text(x + 0.5, y + 0.5, f"S", ha='center', va='center', fontsize=font_size)

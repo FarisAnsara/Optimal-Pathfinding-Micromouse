@@ -15,8 +15,7 @@ class FloodFillOnline(MoveMouse, Walls, Utils):
         Utils.__init__(self)
         self.mazeWidth = maze_width
         self.mazeHeight = maze_height
-        inf = 100000
-        self.flood_map = [[inf for _ in range(self.mazeWidth)] for _ in range(self.mazeHeight)]
+        self.flood_map = [[float('inf')] * self.mazeWidth for _ in range(self.mazeHeight)]
         self.found_shortest = False
         self.goal_position = None
 
