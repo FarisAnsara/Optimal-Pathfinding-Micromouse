@@ -30,9 +30,6 @@ class AStar(Walls, Utils, MoveMouse):
             priority, current_distance, position = heapq.heappop(pq)
             x, y = position
 
-            if position in self.goal_positions:
-                break
-
             if current_distance > self.distances[x][y]:
                 continue
 
