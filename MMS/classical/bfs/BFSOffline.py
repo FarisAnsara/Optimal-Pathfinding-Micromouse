@@ -3,7 +3,7 @@ import sys
 import time
 from collections import deque
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../algorithms/classical/bfs', '..', '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '', '..', '..', '..')))
 from MMS.classical.floodfill.FloodFillOnline import FloodFillOnline
 from MMS.mms_integration import API
 

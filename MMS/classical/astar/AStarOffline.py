@@ -3,8 +3,8 @@ import os
 import sys
 import time
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../../../algorithms/classical/astar',
-                                             '../../classical/astar', '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '', '..', '..', '..')))
+
 from MMS.classical.floodfill.FloodFillOnline import FloodFillOnline
 from MMS.mms_integration import API
 
@@ -34,9 +34,6 @@ class AstarOffline(FloodFillOnline):
         while pq:
             priority, current_distance, position = heapq.heappop(pq)
             x, y = position
-
-            if position in self.goal_positions:
-                break
 
             if current_distance > self.distances[x][y]:
                 continue

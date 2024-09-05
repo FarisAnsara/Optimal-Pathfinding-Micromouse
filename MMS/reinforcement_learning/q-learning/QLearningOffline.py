@@ -32,7 +32,7 @@ class QLearningOffline(RLOffline):
         self.move_update_position(action, offline=True)
         next_state = self.curr_position
         self.update_walls(position=self.curr_position, orientation=self.orientation)
-        reward = self.get_reward(next_state)
+        reward = self.get_reward(next_state, action)
         self.accumulated_reward += reward
 
         max_next_q_value = np.max(self.q_table[next_state[0], next_state[1], :])

@@ -49,12 +49,10 @@ class DynaQSarsaOffline(RLOffline):
         if self.episode > 0:
             for _ in range(self.planning_steps):
                 s, a, r, ns = random.choice(self.model)
-                na = self.choose_action(ns)
-                n_q_value = self.q_table[ns[0], ns[1], na]
+                max_next_q_value = np.max(self.q_table[ns[0], ns[1], :])
                 self.q_table[s[0], s[1], a] += self.alpha * (
-                        r + self.gamma * n_q_value - self.q_table[s[0], s[1], a]
+                        r + self.gamma * max_next_q_value - self.q_table[s[0], s[1], a]
                 )
-
         self.visited_states[next_state[0], next_state[1]] += 1
         self.epsilon = max(self.min_epsilon, self.epsilon * self.epsilon_decay)
 

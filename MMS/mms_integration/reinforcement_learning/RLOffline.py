@@ -1,12 +1,12 @@
 import numpy as np
 import sys
 from MMS.mms_integration import API
-from MMS.classical.floodfill import FloodFillOnline
+from MMS.classical.floodfill.FloodFillOnline import FloodFillOnline
 import random
 
 class RLOffline(FloodFillOnline):
 
-    def __init__(self, epsilon = 0.99):
+    def __init__(self, epsilon=0.99):
         super().__init__()
         self.actions_not_to_take = []
         self.q_table = np.zeros((16, 16, 4))

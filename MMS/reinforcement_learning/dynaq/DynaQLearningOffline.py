@@ -3,8 +3,8 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import random
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                             '../../../algorithms/reinforcement_learning/dynaq', '..', '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '', '..', '..', '..')))
+
 from MMS.mms_integration import API
 from MMS.mms_integration.reinforcement_learning import RLOffline
 
@@ -78,7 +78,7 @@ class DynaQLearningOffline(RLOffline):
         plt.plot(range(len(rewards)), rewards)
         plt.xlabel('Episodes')
         plt.ylabel('Accumulated Reward')
-        plt.title('Q-learning Online Learning')
+        plt.title('DynaQLearning Offline Learning')
         plt.show()
 
 

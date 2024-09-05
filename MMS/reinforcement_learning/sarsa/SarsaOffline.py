@@ -30,7 +30,7 @@ class SarsaOffline(RLOffline):
         self.move_update_position(action, offline=True)
         next_state = self.curr_position
         self.update_walls(position=self.curr_position, orientation=self.orientation)
-        reward = self.get_reward(next_state)
+        reward = self.get_reward(next_state, action)
         self.accumulated_reward += reward
         next_action = self.choose_action(next_state)
         self.q_table[state[0], state[1], action] += self.alpha * (
