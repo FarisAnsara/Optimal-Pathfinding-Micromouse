@@ -18,7 +18,7 @@ The algorithms implemented in this study are split into two categories: **Classi
 - Q-learning
 - SARSA
 - Dyna-Q with Q-learning updates
-- Dyna-Q with a hybrid of SARSA and Q-learning updates
+- Dyna-Q with a hybrid of SARSA and Q-learning updates (This class is called ```DynaQSarsa``` )
 
 The classical algorithms were implemented with distance-based approaches, while only FloodFill, BFS, and the two Dyna-Q variants were implemented with time-based approaches.
 
