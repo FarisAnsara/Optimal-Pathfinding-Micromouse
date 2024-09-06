@@ -18,6 +18,8 @@ class FloodFillOnline(MoveMouse, Walls, Utils):
         self.flood_map = [[float('inf')] * self.mazeWidth for _ in range(self.mazeHeight)]
         self.found_shortest = False
         self.goal_position = None
+        self.n = 0
+
 
     def find_neighbor_descending(self, flood_map=None):
         neighbors = []
@@ -37,17 +39,15 @@ class FloodFillOnline(MoveMouse, Walls, Utils):
         return neighbors
 
     def move_and_floodfill(self, ensure_shortest=True):
+
         while not self.found_shortest:
             self.update_walls(position=self.curr_position, orientation=self.orientation)
+            self.flood_map = self.flood_fill(self.get_goal_position())
             self.update_text_flood_map(self.flood_map)
             neighbors_desc = self.find_neighbor_descending()
             if self.is_goal_position(self.curr_position):
                 self.found_shortest = True
                 break
-
-            if not neighbors_desc:
-                self.flood_map = self.flood_fill(self.get_goal_position())
-                self.move_and_floodfill()
 
             directions = [neighbors_desc[i][0] for i in range(len(neighbors_desc))]
             self.move(directions)
@@ -117,6 +117,7 @@ class FloodFillOnline(MoveMouse, Walls, Utils):
             directions = [neighbors_desc[i][0] for i in range(len(neighbors_desc))]
             self.move(directions)
 
+
     def go_back_to_start(self):
         self.move_to_position(self.start_position, go_back_start=True)
 
@@ -172,6 +173,7 @@ def main():
     log("Running floodfill algorithm...")
     flood = FloodFillOnline()
     flood.move_and_floodfill()
+    # flood.go_back_to_start()
     flood.reset_env()
     flood.take_shortest_path()
 
