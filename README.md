@@ -97,7 +97,7 @@ flood_exec_time = []
 for name, item in mazes.items():
     start_time = time.perf_counter_ns()
     flood = FloodFill(walls=item)
-    flood_exec_time.append(get_runtime(start_time) * pow(10, -3))  # Convert to microseconds
+    flood_exec_time.append(get_runtime(start_time) * pow(10, -3))
     path = flood.get_path_from_flood_map()
     flood_paths.append(path)
     flood_path_times.append(stats.get_time_from_path(path))
@@ -106,7 +106,6 @@ for name, item in mazes.items():
     flood_distances.append(stats.get_dist_travelled())
     flood_turns.append(turns)
 
-# Save the results to a DataFrame and export as CSV
 maze_names = mazes.keys()
 data = {
     'Maze Name': maze_names,
